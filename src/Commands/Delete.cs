@@ -11,7 +11,6 @@ namespace DucksBot.Commands
     /// <summary>
     /// This command will delete the last x messages
     /// or the last x messages of a specific user
-    /// author: Duck
     /// </summary>
     public class Delete : BaseCommandModule
     {
