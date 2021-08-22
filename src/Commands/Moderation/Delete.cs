@@ -12,7 +12,7 @@ namespace DucksBot.Commands
     /// This command will delete the last x messages
     /// or the last x messages of a specific user
     /// </summary>
-    public class Delete : BaseCommandModule
+    public partial class Moderation : BaseCommandModule
     {
         private const int MessageLimit = 50;
         private const string CallbackLimitExceeded = ", since you can't delete more than 50 messages at a time.";
