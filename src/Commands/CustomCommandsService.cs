@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -32,25 +31,10 @@ namespace DucksBot.Commands
         [RequireRoles(RoleCheckMode.Any, "Mod")] // Restrict access to users with the "Mod" role only
         public async Task CreateCommand(CommandContext ctx, [Description("A 'list' of all aliases. The first term is the **main name**, the other ones, separated by a space, are aliases")] params string[] names)
         {
-            names = names.Distinct().ToArray();
-            Array.ForEach(names, x => x = x.ToLowerInvariant());
-            foreach (var name in names)
-            {
-                if (DiscordClient.GetCommandsNext().RegisteredCommands.ContainsKey(name)) // Check if there is a command with one of the names already
-                {
-                    await Utilities.ErrorCallback(CommandErrors.CommandExists, ctx, name);
-                    return;
-                }
-                
-                foreach (var cmd in Commands)
-                {
-                    if (cmd.Names.Contains(name)) // Check if there is already a CC with one of the names
-                    {
-                        await Utilities.ErrorCallback(CommandErrors.CommandExists, ctx, name);
-                        return;
-                    }
-                }
-            }
+            names = names.Distinct().Select(x => x = x.ToLowerInvariant()).ToArray(); // Remove all duplicates and transform all strings to lower-case
+            bool commandExists = await ContainsExistingCommands(names, ctx);
+            if(commandExists)
+                return;
 
             string content = await WaitForContent(ctx, names[0]);
             CustomCommand command = new CustomCommand(names, content);
@@ -76,10 +60,11 @@ namespace DucksBot.Commands
                 File.Delete(filePath);
                 if (TryGetCommand(name, out CustomCommand cmd))
                     Commands.Remove(cmd);
-                
+
                 string embedMessage = $"CC {name} successfully deleted!";
                 await Utilities.BuildEmbedAndExecute("Success", embedMessage, Utilities.Green, ctx, true);
-            }
+            } else
+                await Utilities.ErrorCallback(CommandErrors.MissingCommand, ctx);
         }
 
         [Command("ccedit")]
@@ -127,8 +112,11 @@ namespace DucksBot.Commands
                                                                            "of the CC whose name you want to edit, the **SECOND** term " +
                                                                            "is the new **main name** and all the other terms are new aliases")] params string[] names)
         {
-            names = names.Distinct().ToArray();
-            Array.ForEach(names, x => x = x.ToLowerInvariant());
+            names = names.Distinct().Select(x => x = x.ToLowerInvariant()).ToArray(); // Remove all duplicates and transform all strings to lower-case
+            bool commandExists = await ContainsExistingCommands(names.Skip(1), ctx);
+            if(commandExists)
+                return;
+            
             if (names.Length < 2)
             {
                 await Utilities.ErrorCallback(CommandErrors.InvalidParams, ctx);
@@ -215,7 +203,7 @@ namespace DucksBot.Commands
         {
             if (args.Exception is DSharpPlus.CommandsNext.Exceptions.CommandNotFoundException)
             {
-                string commandName = args.Context.Message.Content.Split(' ')[0].Substring(1);
+                string commandName = args.Context.Message.Content.Split(' ')[0].Substring(1).ToLowerInvariant();
                 if (TryGetCommand(commandName, out CustomCommand command))
                     await command.ExecuteCommand(args.Context);
             }
@@ -257,6 +245,29 @@ namespace DucksBot.Commands
         private static CustomCommand GetCommandByName(string name)
         {
             return Commands.FirstOrDefault(cc => cc.Names.Contains(name));
+        }
+
+        private static async Task<bool> ContainsExistingCommands(IEnumerable<string> names, CommandContext ctx)
+        {
+            foreach (var name in names)
+            {
+                if (DiscordClient.GetCommandsNext().RegisteredCommands.ContainsKey(name)) // Check if there is a command with one of the names already
+                {
+                    await Utilities.ErrorCallback(CommandErrors.CommandExists, ctx, name);
+                    return true;
+                }
+                
+                foreach (var cmd in Commands)
+                {
+                    if (cmd.Names.Contains(name)) // Check if there is already a CC with one of the names
+                    {
+                        await Utilities.ErrorCallback(CommandErrors.CommandExists, ctx, name);
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
     }
 }
