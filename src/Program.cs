@@ -22,7 +22,7 @@ namespace DucksBot
             {
                 Token = token,
                 TokenType = TokenType.Bot,
-                Intents = DiscordIntents.AllUnprivileged | DiscordIntents.GuildMembers
+                Intents = DiscordIntents.AllUnprivileged
             });
             
             discord.UseInteractivity(new InteractivityConfiguration() {
@@ -30,14 +30,14 @@ namespace DucksBot
             });
             CustomCommandsService.DiscordClient = discord;
             
-            CommandsNextExtension commands = discord.UseCommandsNext(new CommandsNextConfiguration() {
+            var commands = discord.UseCommandsNext(new CommandsNextConfiguration() {
                 StringPrefixes = new[] { prefix[0].ToString() } // ! will be the default command prefix if nothing else is specified in the parameters
             });
             commands.CommandErrored += CustomCommandsService.CommandError;
             commands.RegisterCommands(Assembly.GetExecutingAssembly()); // Registers all defined commands
 
             await CustomCommandsService.LoadCustomCommands();
-            
+
             await discord.ConnectAsync();
             await Task.Delay(-1);
         } 
