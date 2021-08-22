@@ -53,6 +53,11 @@ namespace DucksBot.Commands
         public async Task DeleteCommand(CommandContext ctx, [Description("Whose last x messages should get deleted?")]DiscordMember targetUser, 
             [Description("How many messages should get deleted?")] int count)
         {
+            if (targetUser is null)
+            {
+                await Utilities.ErrorCallback(CommandErrors.InvalidUser, ctx);
+                return;
+            }
             if (count <= 0)
             {
                 await Utilities.ErrorCallback(CommandErrors.InvalidParamsDelete, ctx, count);

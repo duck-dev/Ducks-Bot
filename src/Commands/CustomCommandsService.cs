@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,8 +22,8 @@ namespace DucksBot.Commands
         internal static DiscordClient DiscordClient { get; set; }
         internal const string DirectoryNameCC = "CustomCommands";
 
-        [Command("newcc")]
-        [Aliases("createcc", "addcc", "ccadd", "cccreate")]
+        [Command("ccnew")]
+        [Aliases("newcc", "createcc", "cccreate", "addcc", "ccadd")]
         [Description("**Create** a new Custom Command (so-called 'CC') with a specified name and all aliases if desired " +
                      "(no duplicate alias allowed).\nAfter doing this, the bot will ask you to input the content, which will " +
                      "be displayed once someone invokes this CC. Your entire next message will be used for the content, so " +
@@ -32,6 +33,7 @@ namespace DucksBot.Commands
         public async Task CreateCommand(CommandContext ctx, [Description("A 'list' of all aliases. The first term is the **main name**, the other ones, separated by a space, are aliases")] params string[] names)
         {
             names = names.Distinct().ToArray();
+            Array.ForEach(names, x => x = x.ToLowerInvariant());
             foreach (var name in names)
             {
                 if (DiscordClient.GetCommandsNext().RegisteredCommands.ContainsKey(name)) // Check if there is a command with one of the names already
@@ -67,6 +69,7 @@ namespace DucksBot.Commands
         [RequireRoles(RoleCheckMode.Any, "Mod")] // Restrict access to users with the "Mod" role only
         public async Task DeleteCommand(CommandContext ctx, [Description("Main name of the CC you want to delete")] string name)
         {
+            name = name.ToLowerInvariant();
             string filePath = Utilities.ConstructPath(DirectoryNameCC, name, ".txt");
             if (File.Exists(filePath))
             {
@@ -87,6 +90,7 @@ namespace DucksBot.Commands
         [RequireRoles(RoleCheckMode.Any, "Mod")] // Restrict access to users with the "Mod" role only
         public async Task EditCommand(CommandContext ctx, [Description("Main name of the CC you want to edit")] string name)
         {
+            name = name.ToLowerInvariant();
             string filePath = Utilities.ConstructPath(DirectoryNameCC, name, ".txt");
             if (File.Exists(filePath))
             {
@@ -124,6 +128,7 @@ namespace DucksBot.Commands
                                                                            "is the new **main name** and all the other terms are new aliases")] params string[] names)
         {
             names = names.Distinct().ToArray();
+            Array.ForEach(names, x => x = x.ToLowerInvariant());
             if (names.Length < 2)
             {
                 await Utilities.ErrorCallback(CommandErrors.InvalidParams, ctx);

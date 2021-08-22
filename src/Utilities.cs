@@ -130,6 +130,9 @@ namespace DucksBot
                 case CommandErrors.NoCustomCommands:
                     message = "There are no CC's currently.";
                     break;
+                case CommandErrors.InvalidUser:
+                    message = "The specified user doesn't seem to be in this server.";
+                    break;
             }
         
             await BuildEmbedAndExecute("Error", message, red, ctx, respond);
@@ -143,6 +146,7 @@ namespace DucksBot
         CommandExists,
         UnknownError,
         MissingCommand,
-        NoCustomCommands
+        NoCustomCommands,
+        InvalidUser
     }
 }
