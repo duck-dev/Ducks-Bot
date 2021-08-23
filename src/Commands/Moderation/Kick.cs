@@ -14,7 +14,7 @@ namespace DucksBot.Commands
     {
         [Command("kick")]
         [Description("Kicks the specified user.")]
-        [RequirePermissions(Permissions.BanMembers)]
+        [RequirePermissions(Permissions.KickMembers)]
         [RequireRoles(RoleCheckMode.Any, "Mod")]
         public async Task KickCommand(CommandContext ctx, 
             [Description("User to kick.")] DiscordMember user)
@@ -25,7 +25,7 @@ namespace DucksBot.Commands
 
         [Command("kick")]
         [Description("Kicks the specified user with a specified reason.")]
-        [RequirePermissions(Permissions.BanMembers)]
+        [RequirePermissions(Permissions.KickMembers)]
         [RequireRoles(RoleCheckMode.Any, "Mod")]
         public async Task KickCommand(CommandContext ctx, 
             [Description("User to kick.")] DiscordMember user, 
