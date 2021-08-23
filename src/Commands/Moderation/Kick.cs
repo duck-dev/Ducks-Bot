@@ -7,6 +7,9 @@ using DSharpPlus.Entities;
 
 namespace DucksBot.Commands
 {
+    /// <summary>
+    /// This part is responsible for kicking a user from the Discord guild (server)
+    /// </summary>
     public partial class Moderation
     {
         [Command("kick")]
