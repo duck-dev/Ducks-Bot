@@ -27,7 +27,8 @@ namespace DucksBot.Commands
                      "\nThis command can only be invoked by a Helper or Mod.")]
         [RequirePermissions(Permissions.ManageMessages)] // Restrict this command to users/roles who have the "Manage Messages" permission
         [RequireRoles(RoleCheckMode.Any, "Mod")] // Restrict this command to the "Mod" role only
-        public async Task DeleteCommand(CommandContext ctx, [Description("How many messages should be deleted?")] int count)
+        public async Task DeleteCommand(CommandContext ctx, 
+            [Description("How many messages should be deleted?")] int count)
         {
             if (count <= 0)
             {
@@ -49,7 +50,8 @@ namespace DucksBot.Commands
         [Command("delete")]
         [RequirePermissions(Permissions.ManageMessages)] // Restrict this command to users/roles who have the "Manage Messages" permission
         [RequireRoles(RoleCheckMode.Any, "Mod")] // Restrict this command to the "Mod" role only
-        public async Task DeleteCommand(CommandContext ctx, [Description("Whose last x messages should get deleted?")]DiscordMember targetUser, 
+        public async Task DeleteCommand(CommandContext ctx, 
+            [Description("Whose last x messages should get deleted?")] DiscordMember targetUser, 
             [Description("How many messages should get deleted?")] int count)
         {
             if (targetUser is null)

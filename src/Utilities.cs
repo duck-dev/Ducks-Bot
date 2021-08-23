@@ -2,6 +2,7 @@
 using DSharpPlus.Entities;
 using System;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace DucksBot
@@ -16,6 +17,7 @@ namespace DucksBot
         /// Common colors
         /// </summary>
         public static readonly DiscordColor Red = new DiscordColor("#f50f48");
+
         public static readonly DiscordColor Green = new DiscordColor("#32a852");
         public static readonly DiscordColor LightBlue = new DiscordColor("#34cceb");
         public static readonly DiscordColor Yellow = new DiscordColor("#f5bc42");
@@ -94,7 +96,7 @@ namespace DucksBot
 
             return await ctx.Channel.SendMessageAsync(builder.Build());
         }
-        
+
         internal static async Task ErrorCallback(CommandErrors error, CommandContext ctx, params object[] additionalParams)
         {
             DiscordColor red = Red;
@@ -134,11 +136,36 @@ namespace DucksBot
                     message = "The specified user doesn't seem to be in this server.";
                     break;
             }
-        
+
             await BuildEmbedAndExecute("Error", message, red, ctx, respond);
         }
+
+        private static readonly Regex pattern =
+            new Regex(@"^(?:(\d+)y)?(?:(\d+)mo)?(?:(\d+)w)?(?:(\d+)d)?(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s?)?$");
+
+        public static TimeSpan? TransformTimeAbbreviation(string content)
+        {
+            var match = pattern.Match(content);
+            if (!match.Success)
+                return null;
+            
+            var groups = match.Groups;
+
+            TimeSpan result = new TimeSpan(
+                ParseAt(1) * 365 + ParseAt(2) * 30 + ParseAt(3) * 7 + ParseAt(4),
+                ParseAt(5),
+                ParseAt(6),
+                ParseAt(7));
+            return result;
+            
+            int ParseAt(int i)
+            {
+                int.TryParse(groups[i].Value, out int v);
+                return v;
+            }
+        }
     }
-    
+
     public enum CommandErrors
     {
         InvalidParams,
