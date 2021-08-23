@@ -96,6 +96,13 @@ namespace DucksBot
             return await ctx.Channel.SendMessageAsync(builder.Build());
         }
 
+        /// <summary>
+        /// Function called whenever a custom error should be raised
+        /// </summary>
+        /// <param name="error">CommandErrors value, which identifies the error</param>
+        /// <param name="ctx">The CommandContext is needed, so we can send the error message</param>
+        /// <param name="additionalParams">Additional parameters that can be printed if necessary</param>
+        /// <exception cref="ArgumentException">Invalid parameters passed</exception>
         internal static async Task ErrorCallback(CommandErrors error, CommandContext ctx, params object[] additionalParams)
         {
             DiscordColor red = Red;
@@ -139,12 +146,17 @@ namespace DucksBot
             await BuildEmbedAndExecute("Error", message, red, ctx, respond);
         }
 
-        private static readonly Regex pattern =
+        // Regex for abbreviated time statement
+        private static readonly Regex timePattern =
             new Regex(@"^(?:(\d+)y)?(?:(\d+)mo)?(?:(\d+)w)?(?:(\d+)d)?(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s?)?$");
 
+        /// <summary>
+        /// Turns an abbreviated time statement (string, e.g. '4d' for 4 days) into a TimeSpan
+        /// </summary>
+        /// <param name="content">Abbreviated time statement</param>
         public static TimeSpan? TransformTimeAbbreviation(string content)
         {
-            var match = pattern.Match(content);
+            var match = timePattern.Match(content);
             if (!match.Success)
                 return null;
             
@@ -165,6 +177,9 @@ namespace DucksBot
         }
     }
 
+    /// <summary>
+    /// Types of custom errors
+    /// </summary>
     public enum CommandErrors
     {
         InvalidParams,
