@@ -27,21 +27,21 @@ namespace DucksBot.Commands
                      "\nThis command can only be invoked by a Helper or Mod.")]
         [RequirePermissions(Permissions.ManageMessages)] // Restrict this command to users/roles who have the "Manage Messages" permission
         [RequireRoles(RoleCheckMode.Any, "Mod")] // Restrict this command to the "Mod" role only
-        public async Task DeleteCommand(CommandContext ctx, 
+        public async Task DeleteCommandAsync(CommandContext ctx, 
             [Description("How many messages should be deleted?")] int count)
         {
             if (count <= 0)
             {
-                await Utilities.ErrorCallback(CommandErrors.InvalidParamsDelete, ctx, count);
+                await Utilities.ErrorCallbackAsync(CommandErrors.InvalidParamsDelete, ctx, count);
                 return;
             }
 
             bool limitExceeded = CheckLimit(count);
 
             var messages = ctx.Channel.GetMessagesAsync(count + 1).Result;
-            await DeleteMessages(ctx, messages);
+            await DeleteMessagesAsync(ctx, messages);
 
-            await Success(ctx, limitExceeded, count);
+            await SuccessAsync(ctx, limitExceeded, count);
         }
 
         /// <summary>
@@ -50,18 +50,18 @@ namespace DucksBot.Commands
         [Command("delete")]
         [RequirePermissions(Permissions.ManageMessages)] // Restrict this command to users/roles who have the "Manage Messages" permission
         [RequireRoles(RoleCheckMode.Any, "Mod")] // Restrict this command to the "Mod" role only
-        public async Task DeleteCommand(CommandContext ctx, 
+        public async Task DeleteCommandAsync(CommandContext ctx, 
             [Description("Whose last x messages should get deleted?")] DiscordMember targetUser, 
             [Description("How many messages should get deleted?")] int count)
         {
             if (targetUser is null)
             {
-                await Utilities.ErrorCallback(CommandErrors.InvalidUser, ctx);
+                await Utilities.ErrorCallbackAsync(CommandErrors.InvalidUser, ctx);
                 return;
             }
             if (count <= 0)
             {
-                await Utilities.ErrorCallback(CommandErrors.InvalidParamsDelete, ctx, count);
+                await Utilities.ErrorCallbackAsync(CommandErrors.InvalidParamsDelete, ctx, count);
                 return;
             }
 
@@ -69,15 +69,15 @@ namespace DucksBot.Commands
 
             var allMessages = ctx.Channel.GetMessagesAsync().Result; // Get last 100 messages
             var userMessages = allMessages.Where(x => x.Author == targetUser).Take(count + 1);
-            await DeleteMessages(ctx, userMessages);
+            await DeleteMessagesAsync(ctx, userMessages);
 
-            await Success(ctx, limitExceeded, count, targetUser);
+            await SuccessAsync(ctx, limitExceeded, count, targetUser);
         }
 
         /// <summary>
         /// The core-process of deleting the messages
         /// </summary>
-        public async Task DeleteMessages(CommandContext ctx, IEnumerable<DiscordMessage> messages)
+        public async Task DeleteMessagesAsync(CommandContext ctx, IEnumerable<DiscordMessage> messages)
         {
             foreach (DiscordMessage m in messages)
             {
@@ -90,7 +90,7 @@ namespace DucksBot.Commands
         /// Will be called at the end of every execution of this command and tells the user that the execution succeeded
         /// including a short summary of the command (how many messages, by which user etc.)
         /// </summary>
-        private async Task Success(CommandContext ctx, bool limitExceeded, int count, DiscordMember targetUser = null)
+        private async Task SuccessAsync(CommandContext ctx, bool limitExceeded, int count, DiscordMember targetUser = null)
         {
             string mentionUserStr = targetUser == null ? string.Empty : $"by '{targetUser.DisplayName}'";
             string overLimitStr = limitExceeded ? CallbackLimitExceeded : string.Empty;
@@ -100,7 +100,7 @@ namespace DucksBot.Commands
             await ctx.Message.DeleteAsync();
             string embedMessage = $"The last {count} {messagesLiteral} {mentionUserStr} {hasLiteral} been successfully deleted{overLimitStr}.";
 
-            var message = await Utilities.BuildEmbedAndExecute("Success", embedMessage, Utilities.Green, ctx, true);
+            var message = await Utilities.BuildEmbedAndExecuteAsync("Success", embedMessage, Utilities.Green, ctx, true);
             await Task.Delay(10_000);
             await message.DeleteAsync();
         }

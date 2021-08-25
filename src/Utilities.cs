@@ -74,7 +74,7 @@ namespace DucksBot
         /// <param name="color">Embed color</param>
         /// <param name="ctx">CommandContext, required to send a message</param>
         /// <param name="respond">Respond to original message or send an independent message?</param>
-        public static async Task<DiscordMessage> BuildEmbedAndExecute(string title, string description,
+        public static async Task<DiscordMessage> BuildEmbedAndExecuteAsync(string title, string description,
             DiscordColor color,
             CommandContext ctx, bool respond)
         {
@@ -103,7 +103,7 @@ namespace DucksBot
         /// <param name="ctx">The CommandContext is needed, so we can send the error message</param>
         /// <param name="additionalParams">Additional parameters that can be printed if necessary</param>
         /// <exception cref="ArgumentException">Invalid parameters passed</exception>
-        internal static async Task ErrorCallback(CommandErrors error, CommandContext ctx, params object[] additionalParams)
+        internal static async Task ErrorCallbackAsync(CommandErrors error, CommandContext ctx, params object[] additionalParams)
         {
             DiscordColor red = Red;
             string message = string.Empty;
@@ -143,7 +143,7 @@ namespace DucksBot
                     break;
             }
 
-            await BuildEmbedAndExecute("Error", message, red, ctx, respond);
+            await BuildEmbedAndExecuteAsync("Error", message, red, ctx, respond);
         }
 
         // Regex for abbreviated time statement

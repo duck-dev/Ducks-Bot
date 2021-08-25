@@ -15,14 +15,14 @@ namespace DucksBot.Commands
         [Description("Create a poll with a question and several possible answers. You can answer by reacting with" +
                      "one of the given emojis.\n\n**Usage:**\n!poll q: Question a: :emoji-1: Answer1, :emoji-2: Answer2")]
         [RequireRoles(RoleCheckMode.Any, "Mod")]
-        public async Task PollCommand(CommandContext ctx, 
+        public async Task PollCommandAsync(CommandContext ctx, 
             [Description("The entire content of the poll, including question and answers.")] [RemainingText] string content)
         {
             string question = Utilities.GetFromUntil(content, "q:", "a:").Trim();
             string rest = Utilities.GetFromUntil(content, "a:").Trim();
             if (string.IsNullOrEmpty(question) || string.IsNullOrEmpty(rest))
             {
-                await Utilities.ErrorCallback(CommandErrors.InvalidParams, ctx);
+                await Utilities.ErrorCallbackAsync(CommandErrors.InvalidParams, ctx);
                 return;
             }
 
@@ -42,7 +42,7 @@ namespace DucksBot.Commands
             }
 
             await ctx.Message.DeleteAsync();
-            var message = await Utilities.BuildEmbedAndExecute("Poll", description, Utilities.LightBlue, ctx, false);
+            var message = await Utilities.BuildEmbedAndExecuteAsync("Poll", description, Utilities.LightBlue, ctx, false);
             foreach (var e in emojis)
             {
                 await message.CreateReactionAsync(e);

@@ -29,21 +29,21 @@ namespace DucksBot.Commands
                      "be careful what you type!\n\n**Usage:**\n\n- `newcc name` (without alias)\n- `newcc name alias1 alias2`" +
                      " (with 2 aliases)\n\nThis command can only be invoked by a Mod.")]
         [RequireRoles(RoleCheckMode.Any, "Mod")] // Restrict access to users with the "Mod" role only
-        public async Task CreateCommand(CommandContext ctx, 
+        public async Task CreateCommandAsync(CommandContext ctx, 
             [Description("A 'list' of all aliases. The first term is the **main name**, the other ones, separated by a space, are aliases")] params string[] names)
         {
             names = names.Distinct().Select(x => x = x.ToLowerInvariant()).ToArray(); // Remove all duplicates and transform all strings to lower-case
-            bool commandExists = await ContainsExistingCommands(names, ctx);
+            bool commandExists = await ContainsExistingCommandsAsync(names, ctx);
             if(commandExists)
                 return;
 
-            string content = await WaitForContent(ctx, names[0]);
+            string content = await WaitForContentAsync(ctx, names[0]);
             CustomCommand command = new CustomCommand(names, content);
             Commands.Add(command);
-            await WriteToFile(command);
+            await WriteToFileAsync(command);
             
             string embedMessage = $"CC {names[0]} successfully created and saved!";
-            await Utilities.BuildEmbedAndExecute("Success", embedMessage, Utilities.Green, ctx, false);
+            await Utilities.BuildEmbedAndExecuteAsync("Success", embedMessage, Utilities.Green, ctx, false);
         }
 
         [Command("ccdel")]
@@ -52,7 +52,7 @@ namespace DucksBot.Commands
                      "you entered first when you created it, **not an alias!**\nThe CC will be irrevocably deleted." +
                      "\n\nThis command can only be invoked by a Mod.")]
         [RequireRoles(RoleCheckMode.Any, "Mod")] // Restrict access to users with the "Mod" role only
-        public async Task DeleteCommand(CommandContext ctx, 
+        public async Task DeleteCommandAsync(CommandContext ctx, 
             [Description("Main name of the CC you want to delete")] string name)
         {
             name = name.ToLowerInvariant();
@@ -64,9 +64,9 @@ namespace DucksBot.Commands
                     Commands.Remove(cmd);
 
                 string embedMessage = $"CC {name} successfully deleted!";
-                await Utilities.BuildEmbedAndExecute("Success", embedMessage, Utilities.Green, ctx, true);
+                await Utilities.BuildEmbedAndExecuteAsync("Success", embedMessage, Utilities.Green, ctx, true);
             } else
-                await Utilities.ErrorCallback(CommandErrors.MissingCommand, ctx);
+                await Utilities.ErrorCallbackAsync(CommandErrors.MissingCommand, ctx);
         }
 
         [Command("ccedit")]
@@ -75,14 +75,14 @@ namespace DucksBot.Commands
                      "\n**Attention!** Use the main name of the CC you entered first when you created it, **not an alias!**" +
                      "\n\nThis command can only be invoked by a Mod.")]
         [RequireRoles(RoleCheckMode.Any, "Mod")] // Restrict access to users with the "Mod" role only
-        public async Task EditCommand(CommandContext ctx, 
+        public async Task EditCommandAsync(CommandContext ctx, 
             [Description("Main name of the CC you want to edit")] string name)
         {
             name = name.ToLowerInvariant();
             string filePath = Utilities.ConstructPath(DirectoryNameCC, name, ".txt");
             if (File.Exists(filePath))
             {
-                string content = await WaitForContent(ctx, name);
+                string content = await WaitForContentAsync(ctx, name);
                 string firstLine;
                 using (StreamReader sr = File.OpenText(filePath))
                     firstLine = await sr.ReadLineAsync();
@@ -98,10 +98,10 @@ namespace DucksBot.Commands
                     command.EditCommand(content);
 
                 string embedMessage = $"CC **{name}** successfully edited!";
-                await Utilities.BuildEmbedAndExecute("Success", embedMessage, Utilities.Green, ctx, false);
+                await Utilities.BuildEmbedAndExecuteAsync("Success", embedMessage, Utilities.Green, ctx, false);
             }
             else
-                await Utilities.ErrorCallback(CommandErrors.MissingCommand, ctx);
+                await Utilities.ErrorCallbackAsync(CommandErrors.MissingCommand, ctx);
         }
 
         [Command("cceditname")]
@@ -110,19 +110,19 @@ namespace DucksBot.Commands
                      "\n**Attention!** Use the main name of the CC you entered first when you created it, **not an alias!**" +
                      "\n\nThis command can only be invoked by a Mod.")]
         [RequireRoles(RoleCheckMode.Any, "Mod")] // Restrict access to users with the "Mod" role only
-        public async Task EditCommandName(CommandContext ctx, 
+        public async Task EditCommandNameAsync(CommandContext ctx, 
             [Description("A list of new names and aliases, __**BUT**__ the **FIRST** term is the current **main name** " +
                          "of the CC whose name you want to edit, the **SECOND** term " +
                          "is the new **main name** and all the other terms are new aliases")] params string[] names)
         {
             names = names.Distinct().Select(x => x = x.ToLowerInvariant()).ToArray(); // Remove all duplicates and transform all strings to lower-case
-            bool commandExists = await ContainsExistingCommands(names.Skip(1), ctx);
+            bool commandExists = await ContainsExistingCommandsAsync(names.Skip(1), ctx);
             if(commandExists)
                 return;
             
             if (names.Length < 2)
             {
-                await Utilities.ErrorCallback(CommandErrors.InvalidParams, ctx);
+                await Utilities.ErrorCallbackAsync(CommandErrors.InvalidParams, ctx);
                 return;
             }
             
@@ -150,20 +150,20 @@ namespace DucksBot.Commands
                 }
 
                 string embedDescription = "The CC names have been successfully edited.";
-                await Utilities.BuildEmbedAndExecute("Success", embedDescription, Utilities.Green, ctx, false);
+                await Utilities.BuildEmbedAndExecuteAsync("Success", embedDescription, Utilities.Green, ctx, false);
             }
             else
-                await Utilities.ErrorCallback(CommandErrors.MissingCommand, ctx);
+                await Utilities.ErrorCallbackAsync(CommandErrors.MissingCommand, ctx);
         }
 
         [Command("cclist")]
         [Aliases("listcc")]
         [Description("Get a list of all Custom Commands (CC's).")]
-        public async Task ListCC(CommandContext ctx)
+        public async Task ListCCAsync(CommandContext ctx)
         {
             if (Commands.Count <= 0)
             {
-                await Utilities.ErrorCallback(CommandErrors.NoCustomCommands, ctx);
+                await Utilities.ErrorCallbackAsync(CommandErrors.NoCustomCommands, ctx);
                 return;
             }
 
@@ -174,10 +174,10 @@ namespace DucksBot.Commands
                     allCommands += $"- {cmd.Names[0]} ({(cmd.Names.Length > 1 ? string.Join(", ", cmd.Names.Skip(1)) : string.Empty)}){System.Environment.NewLine}";
             }
 
-            await Utilities.BuildEmbedAndExecute("CC List", allCommands, Utilities.Yellow, ctx, true);
+            await Utilities.BuildEmbedAndExecuteAsync("CC List", allCommands, Utilities.Yellow, ctx, true);
         }
 
-        internal static async Task LoadCustomCommands()
+        internal static async Task LoadCustomCommandsAsync()
         {
             string path = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "CustomCommands");
             if (!Directory.Exists(path))
@@ -202,17 +202,17 @@ namespace DucksBot.Commands
             }
         }
 
-        internal static async Task CommandError(CommandsNextExtension extension, CommandErrorEventArgs args)
+        internal static async Task CommandErrorAsync(CommandsNextExtension extension, CommandErrorEventArgs args)
         {
             if (args.Exception is DSharpPlus.CommandsNext.Exceptions.CommandNotFoundException)
             {
                 string commandName = args.Context.Message.Content.Split(' ')[0].Substring(1).ToLowerInvariant();
                 if (TryGetCommand(commandName, out CustomCommand command))
-                    await command.ExecuteCommand(args.Context);
+                    await command.ExecuteCommandAsync(args.Context);
             }
         }
 
-        private async Task WriteToFile(CustomCommand command)
+        private async Task WriteToFileAsync(CustomCommand command)
         {
             if (!File.Exists(command.FilePath))
             {
@@ -224,10 +224,10 @@ namespace DucksBot.Commands
             }
         }
 
-        private async Task<string> WaitForContent(CommandContext ctx, string name)
+        private async Task<string> WaitForContentAsync(CommandContext ctx, string name)
         {
             string embedMessage = $"Please input the content of the CC **{name}** in one single message. Your next message will count as the content.";
-            await Utilities.BuildEmbedAndExecute("Waiting for interaction", embedMessage, Utilities.LightBlue, ctx, true);
+            await Utilities.BuildEmbedAndExecuteAsync("Waiting for interaction", embedMessage, Utilities.LightBlue, ctx, true);
 
             string content = string.Empty;
             await ctx.Message.GetNextMessageAsync(m =>
@@ -250,13 +250,13 @@ namespace DucksBot.Commands
             return Commands.FirstOrDefault(cc => cc.Names.Contains(name));
         }
 
-        private static async Task<bool> ContainsExistingCommands(IEnumerable<string> names, CommandContext ctx)
+        private static async Task<bool> ContainsExistingCommandsAsync(IEnumerable<string> names, CommandContext ctx)
         {
             foreach (var name in names)
             {
                 if (DiscordClient.GetCommandsNext().RegisteredCommands.ContainsKey(name)) // Check if there is a command with one of the names already
                 {
-                    await Utilities.ErrorCallback(CommandErrors.CommandExists, ctx, name);
+                    await Utilities.ErrorCallbackAsync(CommandErrors.CommandExists, ctx, name);
                     return true;
                 }
                 
@@ -264,7 +264,7 @@ namespace DucksBot.Commands
                 {
                     if (cmd.Names.Contains(name)) // Check if there is already a CC with one of the names
                     {
-                        await Utilities.ErrorCallback(CommandErrors.CommandExists, ctx, name);
+                        await Utilities.ErrorCallbackAsync(CommandErrors.CommandExists, ctx, name);
                         return true;
                     }
                 }

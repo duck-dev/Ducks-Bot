@@ -33,10 +33,10 @@ namespace DucksBot
             var commands = discord.UseCommandsNext(new CommandsNextConfiguration() {
                 StringPrefixes = new[] { prefix[0].ToString() } // ! will be the default command prefix if nothing else is specified in the parameters
             });
-            commands.CommandErrored += CustomCommandsService.CommandError;
+            commands.CommandErrored += CustomCommandsService.CommandErrorAsync;
             commands.RegisterCommands(Assembly.GetExecutingAssembly()); // Registers all defined commands
 
-            await CustomCommandsService.LoadCustomCommands();
+            await CustomCommandsService.LoadCustomCommandsAsync();
 
             await discord.ConnectAsync();
             await Task.Delay(-1);

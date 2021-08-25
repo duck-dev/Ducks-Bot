@@ -20,7 +20,7 @@ namespace DucksBot.Commands
         internal string FilePath { get; }
         internal string Content { get; private set; }
 
-        internal async Task ExecuteCommand(CommandContext ctx)
+        internal async Task ExecuteCommandAsync(CommandContext ctx)
         {
             await ctx.Channel.SendMessageAsync(Content);
         }
