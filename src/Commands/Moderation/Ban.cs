@@ -72,7 +72,7 @@ namespace DucksBot.Commands
                 await user.BanAsync(limit, reason);
                 await Utilities.BuildEmbedAndExecuteAsync($"Banned {user.DisplayName}", description, Utilities.Green, ctx, false);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 await Utilities.ErrorCallbackAsync(CommandErrors.UnknownError, ctx);
             }
@@ -136,7 +136,7 @@ namespace DucksBot.Commands
                 await user.UnbanAsync(reason);
                 await Utilities.BuildEmbedAndExecuteAsync($"Unbanned {user.DisplayName}", description, Utilities.Green, ctx, false);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 await Utilities.ErrorCallbackAsync(CommandErrors.UnknownError, ctx);
             }

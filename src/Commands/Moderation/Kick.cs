@@ -48,7 +48,7 @@ namespace DucksBot.Commands
                 await user.RemoveAsync(reason);
                 await Utilities.BuildEmbedAndExecuteAsync($"Kicked {user.DisplayName}", description, Utilities.Green, ctx, false);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 await Utilities.ErrorCallbackAsync(CommandErrors.UnknownError, ctx);
             }

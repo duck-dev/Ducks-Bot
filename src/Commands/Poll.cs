@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
@@ -18,8 +20,8 @@ namespace DucksBot.Commands
         public async Task PollCommandAsync(CommandContext ctx, 
             [Description("The entire content of the poll, including question and answers.")] [RemainingText] string content)
         {
-            string question = Utilities.GetFromUntil(content, "q:", "a:").Trim();
-            string rest = Utilities.GetFromUntil(content, "a:").Trim();
+            string question = content.GetFromUntil("q:", "a:").Trim();
+            string rest = content.GetFromUntil("a:").Trim();
             if (string.IsNullOrEmpty(question) || string.IsNullOrEmpty(rest))
             {
                 await Utilities.ErrorCallbackAsync(CommandErrors.InvalidParams, ctx);
@@ -27,14 +29,22 @@ namespace DucksBot.Commands
             }
 
             string[] allEmojisStr = rest.Split(',');
-            string[] allInserts = allEmojisStr.Select(x => Utilities.GetFromUntil(x, @"""".Trim())).ToArray();
-            allEmojisStr = allEmojisStr.Select(x => Utilities.GetUntilOrEmpty(x, @"""".Trim())).ToArray();
+            string[] allInserts = allEmojisStr.Select(x => x.GetFromUntil(@"""", x.Length - 1)).ToArray();
+            allEmojisStr = allEmojisStr.Select(x => x.GetUntilOrEmpty(@"""")).ToArray();
             var emojis = new DiscordEmoji[allEmojisStr.Length];
 
             string description = question;
+
             for (int i = 0; i < allEmojisStr.Length; i++)
             {
-                if (DiscordEmoji.TryFromName(ctx.Client, allEmojisStr[i], out DiscordEmoji emoji))
+                string currentEmoji = allEmojisStr[i];
+                currentEmoji = currentEmoji.Trim();
+                
+                var enc = new UTF32Encoding(true, false);
+                byte[] bytes = enc.GetBytes(currentEmoji);
+                string o = BitConverter.ToString(bytes).Replace("-", string.Empty);
+                
+                if (DiscordEmoji.TryFromUnicode(currentEmoji, out DiscordEmoji emoji))
                 {
                     emojis[i] = emoji;
                     description += $"\n{emoji} {allInserts[i]}";
