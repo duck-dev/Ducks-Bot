@@ -132,8 +132,12 @@ namespace DucksBot
                     else
                         goto case CommandErrors.InvalidParams;
                     break;
-                case CommandErrors.MissingCommand:
+                case CommandErrors.MissingCommandMainName:
                     message = "There is no command with this name! If it's a CC, please don't use an alias, use the original name!";
+                    respond = true;
+                    break;
+                case CommandErrors.MissingCommand:
+                    message = "There is no command or alias with the specified name.";
                     respond = true;
                     break;
                 case CommandErrors.NoCustomCommands:
@@ -179,7 +183,12 @@ namespace DucksBot
 
         public static DiscordRole GetRoleByName(string roleName, CommandContext ctx)
         {
-            var role = ctx.Guild.Roles.FirstOrDefault(x => x.Value.Name == roleName).Value;
+            return GetRoleByName(roleName, ctx.Guild);
+        }
+
+        public static DiscordRole GetRoleByName(string roleName, DiscordGuild guild)
+        {
+            var role = guild.Roles.FirstOrDefault(x => x.Value.Name == roleName).Value;
             if (role is null)
                 throw new InvalidOperationException($"The role {roleName} does not exist in the current guild.");
             
@@ -196,6 +205,7 @@ namespace DucksBot
         InvalidParamsDelete,
         CommandExists,
         UnknownError,
+        MissingCommandMainName,
         MissingCommand,
         NoCustomCommands,
         InvalidUser

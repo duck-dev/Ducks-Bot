@@ -4,6 +4,7 @@ using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
+using DucksBot.Services;
 
 namespace DucksBot.Commands
 {
@@ -79,26 +80,54 @@ namespace DucksBot.Commands
         }
         
         // <-------------- Temporary ban --------------> //
+        
+        [Command("tempban")]
+        [Description("Bans a user temporarily and unbans them after this certain timespan has passed.")]
+        [RequirePermissions(Permissions.BanMembers)]
+        [RequireRoles(RoleCheckMode.Any, "Mod")]
+        public async Task TempbanCommandAsync(CommandContext ctx, 
+            [Description("The user to be temp-banned.")] DiscordMember user, 
+            [Description("The length of this temporary mute (string will be converted to timespan).")] string length)
+        {
+            await TempbanCommandAsync(ctx, user, length, null);
+        }
 
-        // [Command("tempban")]
-        // [Description("")]
-        // [RequirePermissions(Permissions.BanMembers)]
-        // [RequireRoles(RoleCheckMode.Any, "Mod")]
-        // public async Task TempbanCommandAsync(CommandContext ctx, DiscordMember user, string length)
-        // {
-        //     if (user is null)
-        //     {
-        //         await Utilities.ErrorCallbackAsync(CommandErrors.InvalidUser, ctx);
-        //         return;
-        //     }
-        //     
-        //     var span = Utilities.TransformTimeAbbreviation(length);
-        //     if (span is null)
-        //     {
-        //         await Utilities.ErrorCallbackAsync(CommandErrors.InvalidParams, ctx);
-        //         return;
-        //     }
-        // }
+        [Command("tempban")]
+        [Description("Bans a user temporarily and unbans them after this certain timespan has passed.")]
+        [RequirePermissions(Permissions.BanMembers)]
+        [RequireRoles(RoleCheckMode.Any, "Mod")]
+        public async Task TempbanCommandAsync(CommandContext ctx, 
+            [Description("The user to be temp-banned.")] DiscordMember user, 
+            [Description("The length of this temporary mute (string will be converted to timespan).")] string length,
+            [Description("The reason for the temp-ban.")] string reason)
+        {
+            if (user is null)
+            {
+                await Utilities.ErrorCallbackAsync(CommandErrors.InvalidUser, ctx);
+                return;
+            }
+            
+            var span = Utilities.TransformTimeAbbreviation(length);
+            if (span is null)
+            {
+                await Utilities.ErrorCallbackAsync(CommandErrors.InvalidParams, ctx);
+                return;
+            }
+            
+            try
+            {
+                await user.BanAsync(7, reason);
+                string description = $"{user.DisplayName} has been successfully temp-banned for the following reason:{Environment.NewLine}**{reason}**";
+                await Utilities.BuildEmbedAndExecuteAsync($"Temp-banned {user.DisplayName}", description, Utilities.Green, ctx, false);
+            }
+            catch (Exception)
+            {
+                await Utilities.ErrorCallbackAsync(CommandErrors.UnknownError, ctx);
+            }
+            
+            TemporaryInfraction infraction = new TemporaryInfraction(InfractionTypes.TempBan, user, span);
+            InfractionService.Infractions.Add(infraction);
+        }
         
         // <-------------- Unban --------------> //
 

@@ -66,7 +66,7 @@ namespace DucksBot.Commands
                 string embedMessage = $"CC {name} successfully deleted!";
                 await Utilities.BuildEmbedAndExecuteAsync("Success", embedMessage, Utilities.Green, ctx, true);
             } else
-                await Utilities.ErrorCallbackAsync(CommandErrors.MissingCommand, ctx);
+                await Utilities.ErrorCallbackAsync(CommandErrors.MissingCommandMainName, ctx);
         }
 
         [Command("ccedit")]
@@ -101,7 +101,7 @@ namespace DucksBot.Commands
                 await Utilities.BuildEmbedAndExecuteAsync("Success", embedMessage, Utilities.Green, ctx, false);
             }
             else
-                await Utilities.ErrorCallbackAsync(CommandErrors.MissingCommand, ctx);
+                await Utilities.ErrorCallbackAsync(CommandErrors.MissingCommandMainName, ctx);
         }
 
         [Command("cceditname")]
@@ -153,7 +153,7 @@ namespace DucksBot.Commands
                 await Utilities.BuildEmbedAndExecuteAsync("Success", embedDescription, Utilities.Green, ctx, false);
             }
             else
-                await Utilities.ErrorCallbackAsync(CommandErrors.MissingCommand, ctx);
+                await Utilities.ErrorCallbackAsync(CommandErrors.MissingCommandMainName, ctx);
         }
 
         [Command("cclist")]
@@ -202,16 +202,6 @@ namespace DucksBot.Commands
             }
         }
 
-        internal static async Task CommandErrorAsync(CommandsNextExtension extension, CommandErrorEventArgs args)
-        {
-            if (args.Exception is DSharpPlus.CommandsNext.Exceptions.CommandNotFoundException)
-            {
-                string commandName = args.Context.Message.Content.Split(' ')[0].Substring(1).ToLowerInvariant();
-                if (TryGetCommand(commandName, out CustomCommand command))
-                    await command.ExecuteCommandAsync(args.Context);
-            }
-        }
-
         private async Task WriteToFileAsync(CustomCommand command)
         {
             if (!File.Exists(command.FilePath))
@@ -239,7 +229,7 @@ namespace DucksBot.Commands
             return content;
         }
 
-        private static bool TryGetCommand(string name, out CustomCommand command)
+        internal static bool TryGetCommand(string name, out CustomCommand command)
         {
             command = GetCommandByName(name);
             return command != null;

@@ -6,6 +6,7 @@ using DSharpPlus.CommandsNext;
 using DSharpPlus.Interactivity;
 using DSharpPlus.Interactivity.Extensions;
 using DucksBot.Commands;
+using DucksBot.Services;
 
 namespace DucksBot
 {
@@ -33,9 +34,9 @@ namespace DucksBot
             var commands = discord.UseCommandsNext(new CommandsNextConfiguration() {
                 StringPrefixes = new[] { prefix[0].ToString() } // ! will be the default command prefix if nothing else is specified in the parameters
             });
-            commands.CommandErrored += CustomCommandsService.CommandErrorAsync;
+            commands.CommandErrored += CommandHandlerService.CommandErrorAsync;
             commands.RegisterCommands(Assembly.GetExecutingAssembly()); // Registers all defined commands
-
+            
             await CustomCommandsService.LoadCustomCommandsAsync();
 
             await discord.ConnectAsync();
