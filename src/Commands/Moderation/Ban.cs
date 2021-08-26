@@ -88,14 +88,14 @@ namespace DucksBot.Commands
         // {
         //     if (user is null)
         //     {
-        //         await Utilities.ErrorCallback(CommandErrors.InvalidUser, ctx);
+        //         await Utilities.ErrorCallbackAsync(CommandErrors.InvalidUser, ctx);
         //         return;
         //     }
         //     
         //     var span = Utilities.TransformTimeAbbreviation(length);
         //     if (span is null)
         //     {
-        //         await Utilities.ErrorCallback(CommandErrors.InvalidParams, ctx);
+        //         await Utilities.ErrorCallbackAsync(CommandErrors.InvalidParams, ctx);
         //         return;
         //     }
         // }

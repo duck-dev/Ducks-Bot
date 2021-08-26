@@ -2,6 +2,7 @@
 using DSharpPlus.Entities;
 using System;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -174,6 +175,15 @@ namespace DucksBot
                 int.TryParse(groups[i].Value, out int v);
                 return v;
             }
+        }
+
+        public static DiscordRole GetRoleByName(string roleName, CommandContext ctx)
+        {
+            var role = ctx.Guild.Roles.FirstOrDefault(x => x.Value.Name == roleName).Value;
+            if (role is null)
+                throw new InvalidOperationException($"The role {roleName} does not exist in the current guild.");
+            
+            return role;
         }
     }
 
