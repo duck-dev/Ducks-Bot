@@ -21,11 +21,11 @@ namespace DucksBot.Services
                 AutoReset = true,
                 Enabled = true
             };
-            timer.Elapsed += async (sender, args) => await EvaluateInfractions();
+            timer.Elapsed += async (sender, args) => await EvaluateInfractionsAsync();
             timer.Start();
         }
 
-        private static async Task EvaluateInfractions()
+        private static async Task EvaluateInfractionsAsync()
         {
             DateTime now = DateTime.Now;
             foreach (var infr in Infractions)
