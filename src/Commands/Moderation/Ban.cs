@@ -20,8 +20,7 @@ namespace DucksBot.Commands
         public async Task BanCommandAsync(CommandContext ctx, 
             [Description("The user to ban.")] DiscordMember user)
         {
-            string description = $"{user.DisplayName} has been successfully banned!";
-            await BanAsync(user, ctx, description);
+            await BanAsync(user, ctx);
         }
 
         [Command("ban")]
@@ -32,8 +31,7 @@ namespace DucksBot.Commands
             [Description("The user to ban.")] DiscordMember user, 
             [Description("The reason for the ban.")] string reason)
         {
-            string description = $"{user.DisplayName} has been successfully banned for the following reason:{Environment.NewLine}**{reason}**";
-            await BanAsync(user, ctx, description, reason);
+            await BanAsync(user, ctx, reason);
         }
 
         [Command("softban")]
@@ -43,8 +41,7 @@ namespace DucksBot.Commands
         public async Task SoftbanCommandAsync(CommandContext ctx,
             [Description("The user to ban.")] DiscordMember user)
         {
-            string description = $"{user.DisplayName} has been successfully banned!";
-            await BanAsync(user, ctx, description, null, true);
+            await BanAsync(user, ctx, null, true);
         }
         
         [Command("softban")]
@@ -55,11 +52,10 @@ namespace DucksBot.Commands
             [Description("The user to ban.")] DiscordMember user,
             [Description("The reason for the ban.")] string reason)
         {
-            string description = $"{user.DisplayName} has been successfully banned for the following reason:{Environment.NewLine}**{reason}**";
-            await BanAsync(user, ctx, description, reason, true);
+            await BanAsync(user, ctx, reason, true);
         }
 
-        private static async Task BanAsync(DiscordMember user, CommandContext ctx, string description, string reason = null, bool softban = false)
+        private static async Task BanAsync(DiscordMember user, CommandContext ctx, string reason = null, bool softban = false)
         {
             if (user is null)
             {
