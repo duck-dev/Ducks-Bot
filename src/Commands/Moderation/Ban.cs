@@ -143,11 +143,10 @@ namespace DucksBot.Commands
             [Description("The user to unban.")] DiscordMember user,
             [Description("The reason for the unban.")] string reason)
         {
-            string description = $"{user.DisplayName} has been successfully banned for the following reason:{Environment.NewLine}**{reason}**";
-            await UnbanAsync(user, ctx, description, reason);
+            await UnbanAsync(user, ctx, reason);
         }
 
-        private static async Task UnbanAsync(DiscordMember user, CommandContext ctx, string description, string reason = null)
+        private static async Task UnbanAsync(DiscordMember user, CommandContext ctx, string reason = null)
         {
             if (user is null)
             {
@@ -158,6 +157,7 @@ namespace DucksBot.Commands
             try
             {
                 await user.UnbanAsync(reason);
+                string description = $"{user.DisplayName} has been successfully banned.\n\n**Reason:**\n{reason}";
                 await Utilities.BuildEmbedAndExecuteAsync($"Unbanned {user.DisplayName}", description, Utilities.Green, ctx, false);
             }
             catch (Exception)
