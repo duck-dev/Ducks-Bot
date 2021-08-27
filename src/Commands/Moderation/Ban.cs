@@ -71,7 +71,7 @@ namespace DucksBot.Commands
             try
             {
                 await user.BanAsync(limit, reason);
-                await Utilities.BuildEmbedAndExecuteAsync($"Banned {user.DisplayName}", description, Utilities.Green, ctx, false);
+                await Utilities.BuildModerationCallback(reason, user, ctx, InfractionTypes.Ban);
             }
             catch (Exception)
             {
@@ -117,8 +117,7 @@ namespace DucksBot.Commands
             try
             {
                 await user.BanAsync(7, reason);
-                string description = $"{user.DisplayName} has been successfully temp-banned for the following reason:{Environment.NewLine}**{reason}**";
-                await Utilities.BuildEmbedAndExecuteAsync($"Temp-banned {user.DisplayName}", description, Utilities.Green, ctx, false);
+                await Utilities.BuildModerationCallback(reason, span.ToString(), user, ctx, InfractionTypes.TempBan);
             }
             catch (Exception)
             {

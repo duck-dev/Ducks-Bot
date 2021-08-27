@@ -4,6 +4,7 @@ using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
+using DucksBot.Services;
 
 namespace DucksBot.Commands
 {
@@ -19,8 +20,7 @@ namespace DucksBot.Commands
         public async Task KickCommandAsync(CommandContext ctx, 
             [Description("User to kick.")] DiscordMember user)
         {
-            string description = $"{user.DisplayName} has been successfully kicked from this server!";
-            await KickAsync(user, ctx, description);
+            await KickAsync(user, ctx);
         }
 
         [Command("kick")]
@@ -31,11 +31,10 @@ namespace DucksBot.Commands
             [Description("User to kick.")] DiscordMember user, 
             [Description("Reason for the kick.")] string reason)
         {
-            string description = $"{user.DisplayName} has been successfully kicked for the following reason:{Environment.NewLine}**{reason}**";
-            await KickAsync(user, ctx, description, reason);
+            await KickAsync(user, ctx, reason);
         }
 
-        private static async Task KickAsync(DiscordMember user, CommandContext ctx, string description, string reason = null)
+        private static async Task KickAsync(DiscordMember user, CommandContext ctx, string reason = null)
         {
             if (user is null)
             {
@@ -46,7 +45,7 @@ namespace DucksBot.Commands
             try
             {
                 await user.RemoveAsync(reason);
-                await Utilities.BuildEmbedAndExecuteAsync($"Kicked {user.DisplayName}", description, Utilities.Green, ctx, false);
+                await Utilities.BuildModerationCallback(reason, user, ctx, InfractionTypes.Kick);
             }
             catch (Exception)
             {

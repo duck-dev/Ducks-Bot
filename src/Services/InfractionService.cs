@@ -46,9 +46,11 @@ namespace DucksBot.Services
         }
     }
 
-    internal enum InfractionTypes
+    public enum InfractionTypes
     {
+        Ban,
         TempBan,
+        Kick,
         TempMute
     }
 }

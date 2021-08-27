@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using DucksBot.Services;
 
 namespace DucksBot
 {
@@ -194,6 +195,33 @@ namespace DucksBot
                 throw new InvalidOperationException($"The role {roleName} does not exist in the current guild.");
             
             return role;
+        }
+
+        public static async Task<DiscordMessage> BuildModerationCallback(string reason, DiscordMember user, CommandContext ctx,
+            InfractionTypes infractionType)
+        {
+            return await BuildModerationCallback(reason, null, user, ctx, infractionType);
+        }
+
+        public static async Task<DiscordMessage> BuildModerationCallback(string reason, string duration, DiscordMember user, 
+            CommandContext ctx,
+            InfractionTypes infractionType)
+        {
+            reason ??= "Unspecified";
+            string type = infractionType switch
+            {
+                InfractionTypes.Ban => "Banned",
+                InfractionTypes.TempBan => "Tempbanned",
+                InfractionTypes.Kick => "Kicked",
+                InfractionTypes.TempMute => "Tempmuted",
+                _ => string.Empty
+            };
+            
+            string description = $"**Reason:**\n{reason}";
+            if(duration != null)
+                description += $"\n**Duration:**\n{duration}";
+            
+            return await BuildEmbedAndExecuteAsync($"{type} '{user.DisplayName}'", description, Red, ctx, false);
         }
     }
 
