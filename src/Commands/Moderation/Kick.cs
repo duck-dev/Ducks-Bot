@@ -29,7 +29,7 @@ namespace DucksBot.Commands
         [RequireRoles(RoleCheckMode.Any, "Mod")]
         public async Task KickCommandAsync(CommandContext ctx, 
             [Description("User to kick.")] DiscordMember user, 
-            [Description("Reason for the kick.")] string reason)
+            [Description("Reason for the kick.")] [RemainingText] string reason)
         {
             await KickAsync(user, ctx, reason);
         }

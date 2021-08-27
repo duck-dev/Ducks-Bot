@@ -29,7 +29,7 @@ namespace DucksBot.Commands
         [RequireRoles(RoleCheckMode.Any, "Mod")]
         public async Task BanCommandAsync(CommandContext ctx, 
             [Description("The user to ban.")] DiscordMember user, 
-            [Description("The reason for the ban.")] string reason)
+            [Description("The reason for the ban.")] [RemainingText] string reason)
         {
             await BanAsync(user, ctx, reason);
         }
@@ -50,7 +50,7 @@ namespace DucksBot.Commands
         [RequireRoles(RoleCheckMode.Any, "Mod")]
         public async Task SoftbanCommandAsync(CommandContext ctx,
             [Description("The user to ban.")] DiscordMember user,
-            [Description("The reason for the ban.")] string reason)
+            [Description("The reason for the ban.")] [RemainingText] string reason)
         {
             await BanAsync(user, ctx, reason, true);
         }
@@ -95,7 +95,7 @@ namespace DucksBot.Commands
         public async Task TempbanCommandAsync(CommandContext ctx, 
             [Description("The user to be temp-banned.")] DiscordMember user, 
             [Description("The length of this temporary mute (string will be converted to timespan).")] string length,
-            [Description("The reason for the temp-ban.")] string reason)
+            [Description("The reason for the temp-ban.")] [RemainingText] string reason)
         {
             if (user is null)
             {
@@ -141,7 +141,7 @@ namespace DucksBot.Commands
         [RequireRoles(RoleCheckMode.Any, "Mod")]
         public async Task UnbanCommandAsync(CommandContext ctx,
             [Description("The user to unban.")] DiscordMember user,
-            [Description("The reason for the unban.")] string reason)
+            [Description("The reason for the unban.")] [RemainingText] string reason)
         {
             await UnbanAsync(user, ctx, reason);
         }
@@ -157,6 +157,10 @@ namespace DucksBot.Commands
             try
             {
                 await user.UnbanAsync(reason);
+                
+                InfractionService.RemoveInfractionPrematurely(user, InfractionTypes.TempBan);
+                
+                reason ??= "Unspecified";
                 string description = $"{user.DisplayName} has been successfully banned.\n\n**Reason:**\n{reason}";
                 await Utilities.BuildEmbedAndExecuteAsync($"Unbanned {user.DisplayName}", description, Utilities.Green, ctx, false);
             }

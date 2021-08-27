@@ -219,7 +219,7 @@ namespace DucksBot
             
             string description = $"**Reason:**\n{reason}";
             if(duration != null)
-                description += $"\n**Duration:**\n{duration}";
+                description += $"\n\n**Duration:**\n{duration}";
             
             return await BuildEmbedAndExecuteAsync($"{type} '{user.DisplayName}'", description, Red, ctx, false);
         }

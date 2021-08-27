@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
 using DSharpPlus.Entities;
@@ -38,11 +39,19 @@ namespace DucksBot.Services
                             await user.UnbanAsync();
                             break;
                         case InfractionTypes.TempMute:
-                            await user.RevokeRoleAsync(Utilities.GetRoleByName("Muted", infr.Guild));
+                            var role = Utilities.GetRoleByName("Muted", infr.Guild);
+                            await user.RevokeRoleAsync(role);
                             break;
                     }
                 }
             }
+        }
+
+        public static void RemoveInfractionPrematurely(DiscordMember user, InfractionTypes type)
+        {
+            var infr = Infractions.FirstOrDefault(x => x.User == user && x.InfractionType == type);
+            if (infr != null)
+                Infractions.Remove(infr);
         }
     }
 
