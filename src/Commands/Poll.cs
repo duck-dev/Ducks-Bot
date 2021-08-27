@@ -40,14 +40,26 @@ namespace DucksBot.Commands
                 string currentEmoji = allEmojisStr[i];
                 currentEmoji = currentEmoji.Trim();
                 
-                var enc = new UTF32Encoding(true, false);
-                byte[] bytes = enc.GetBytes(currentEmoji);
-                string o = BitConverter.ToString(bytes).Replace("-", string.Empty);
+                // var enc = new UTF32Encoding(true, false);
+                // byte[] bytes = enc.GetBytes(currentEmoji);
+                // string o = BitConverter.ToString(bytes).Replace("-", string.Empty);
                 
+                string currentEmoteWithoutName = currentEmoji;
+                if (currentEmoji.Contains(':'))
+                {
+                    int idBegins = currentEmoji.LastIndexOf(':') + 1;
+                    currentEmoteWithoutName = currentEmoji.Substring(idBegins, currentEmoji.Length - idBegins - 1);
+                }
+
                 if (DiscordEmoji.TryFromUnicode(currentEmoji, out DiscordEmoji emoji))
                 {
                     emojis[i] = emoji;
                     description += $"\n{emoji} {allInserts[i]}";
+                } else if (ulong.TryParse(currentEmoteWithoutName, out ulong emoteID) 
+                           && DiscordEmoji.TryFromGuildEmote(ctx.Client, emoteID, out DiscordEmoji guildEmote))
+                {
+                    emojis[i] = guildEmote;
+                    description += $"\n{guildEmote} {allInserts[i]}";
                 }
             }
 

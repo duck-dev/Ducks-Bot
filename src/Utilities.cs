@@ -77,7 +77,8 @@ namespace DucksBot
         /// <param name="respond">Respond to original message or send an independent message?</param>
         public static async Task<DiscordMessage> BuildEmbedAndExecuteAsync(string title, string description,
             DiscordColor color,
-            CommandContext ctx, bool respond)
+            CommandContext ctx, 
+            bool respond)
         {
             var embedBuilder = BuildEmbed(title, description, color);
             return await LogEmbed(embedBuilder, ctx, respond);
