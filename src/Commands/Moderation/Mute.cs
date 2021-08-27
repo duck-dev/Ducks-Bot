@@ -51,7 +51,7 @@ namespace DucksBot.Commands
                 return;
             }
 
-            TemporaryInfraction infraction = new TemporaryInfraction(InfractionTypes.TempMute, user, span);
+            TemporaryInfraction infraction = new TemporaryInfraction(InfractionTypes.TempMute, user, span, ctx.Guild);
             InfractionService.Infractions.Add(infraction);
         }
     }

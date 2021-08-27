@@ -37,6 +37,7 @@ namespace DucksBot
             commands.CommandErrored += CommandHandlerService.CommandErrorAsync;
             commands.RegisterCommands(Assembly.GetExecutingAssembly()); // Registers all defined commands
             
+            InfractionService.Initialize();
             await CustomCommandsService.LoadCustomCommandsAsync();
 
             await discord.ConnectAsync();

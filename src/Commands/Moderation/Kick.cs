@@ -19,7 +19,7 @@ namespace DucksBot.Commands
         public async Task KickCommandAsync(CommandContext ctx, 
             [Description("User to kick.")] DiscordMember user)
         {
-            string description = $"{user.DisplayName} has been successfully banned!";
+            string description = $"{user.DisplayName} has been successfully kicked from this server!";
             await KickAsync(user, ctx, description);
         }
 

@@ -125,7 +125,7 @@ namespace DucksBot.Commands
                 await Utilities.ErrorCallbackAsync(CommandErrors.UnknownError, ctx);
             }
             
-            TemporaryInfraction infraction = new TemporaryInfraction(InfractionTypes.TempBan, user, span);
+            TemporaryInfraction infraction = new TemporaryInfraction(InfractionTypes.TempBan, user, span, ctx.Guild);
             InfractionService.Infractions.Add(infraction);
         }
         

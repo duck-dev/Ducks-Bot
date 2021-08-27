@@ -68,7 +68,7 @@ namespace DucksBot.Commands
             bool limitExceeded = CheckLimit(count);
 
             var allMessages = ctx.Channel.GetMessagesAsync().Result; // Get last 100 messages
-            var userMessages = allMessages.Where(x => x.Author == targetUser).Take(count + 1);
+            var userMessages = allMessages.Where(x => x.Author == targetUser && x != ctx.Message).Take(count);
             await DeleteMessagesAsync(ctx, userMessages);
 
             await SuccessAsync(ctx, limitExceeded, count, targetUser);
@@ -77,7 +77,7 @@ namespace DucksBot.Commands
         /// <summary>
         /// The core-process of deleting the messages
         /// </summary>
-        public async Task DeleteMessagesAsync(CommandContext ctx, IEnumerable<DiscordMessage> messages)
+        private async Task DeleteMessagesAsync(CommandContext ctx, IEnumerable<DiscordMessage> messages)
         {
             foreach (DiscordMessage m in messages)
             {

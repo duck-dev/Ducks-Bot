@@ -9,13 +9,10 @@ namespace DucksBot.Services
     public static class InfractionService
     {
         internal static List<TemporaryInfraction> Infractions { get; } = new List<TemporaryInfraction>();
-        private static DiscordGuild currentGuild;
         private static Timer timer;
 
-        internal static void Initialize(DiscordGuild guild)
+        internal static void Initialize()
         {
-            currentGuild = guild;
-            
             timer = new Timer(TimeSpan.FromSeconds(10).TotalMilliseconds)
             {
                 AutoReset = true,
@@ -28,8 +25,9 @@ namespace DucksBot.Services
         private static async Task EvaluateInfractionsAsync()
         {
             DateTime now = DateTime.Now;
-            foreach (var infr in Infractions)
+            for (int i = Infractions.Count - 1; i >= 0; i--)
             {
+                TemporaryInfraction infr = Infractions[i];
                 DiscordMember user = infr.User;
                 if (infr.ReleaseTime <= now)
                 {
@@ -37,10 +35,10 @@ namespace DucksBot.Services
                     switch (infr.InfractionType)
                     {
                         case InfractionTypes.TempBan:
-                            await infr.User.UnbanAsync();
+                            await user.UnbanAsync();
                             break;
                         case InfractionTypes.TempMute:
-                            await infr.User.RevokeRoleAsync(Utilities.GetRoleByName("Muted", currentGuild));
+                            await user.RevokeRoleAsync(Utilities.GetRoleByName("Muted", infr.Guild));
                             break;
                     }
                 }
