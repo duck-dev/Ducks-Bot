@@ -47,9 +47,9 @@ namespace DucksBot.Services
             }
         }
 
-        public static void RemoveInfractionPrematurely(DiscordMember user, InfractionTypes type)
+        public static void RemoveInfractionPrematurely(DiscordUser user, InfractionTypes type)
         {
-            var infr = Infractions.FirstOrDefault(x => x.User == user && x.InfractionType == type);
+            var infr = Infractions.FirstOrDefault(x => x.User.Id == user.Id && x.InfractionType == type);
             if (infr != null)
                 Infractions.Remove(infr);
         }

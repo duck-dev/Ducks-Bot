@@ -130,39 +130,34 @@ namespace DucksBot.Commands
         [RequirePermissions(Permissions.BanMembers)]
         [RequireRoles(RoleCheckMode.Any, "Mod")]
         public async Task UnbanCommandAsync(CommandContext ctx, 
-            [Description("The user to unban.")] DiscordMember user)
+            [Description("The ID of the user to unban.")] ulong userID)
         {
-            string description = $"{user.DisplayName} has been successfully unbanned!";
-            await UnbanAsync(user, ctx, description);
+            await UnbanCommandAsync(ctx, userID, null);
         }
 
         [Command("unban")]
         [RequirePermissions(Permissions.BanMembers)]
         [RequireRoles(RoleCheckMode.Any, "Mod")]
         public async Task UnbanCommandAsync(CommandContext ctx,
-            [Description("The user to unban.")] DiscordMember user,
+            [Description("The ID of the user to unban.")] ulong userID,
             [Description("The reason for the unban.")] [RemainingText] string reason)
         {
-            await UnbanAsync(user, ctx, reason);
-        }
-
-        private static async Task UnbanAsync(DiscordMember user, CommandContext ctx, string reason = null)
-        {
+            var user = await ctx.Client.GetUserAsync(userID);
             if (user is null)
             {
                 await Utilities.ErrorCallbackAsync(CommandErrors.InvalidUser, ctx);
                 return;
             }
-
+            
             try
             {
-                await user.UnbanAsync(reason);
+                await ctx.Guild.UnbanMemberAsync(userID, reason);
                 
                 InfractionService.RemoveInfractionPrematurely(user, InfractionTypes.TempBan);
                 
                 reason ??= "Unspecified";
-                string description = $"{user.DisplayName} has been successfully banned.\n\n**Reason:**\n{reason}";
-                await Utilities.BuildEmbedAndExecuteAsync($"Unbanned {user.DisplayName}", description, Utilities.Green, ctx, false);
+                string description = $"{user.Username} has been successfully unbanned.\n\n**Reason:**\n{reason}";
+                await Utilities.BuildEmbedAndExecuteAsync($"Unbanned {user.Username}", description, Utilities.Green, ctx, false);
             }
             catch (Exception)
             {
