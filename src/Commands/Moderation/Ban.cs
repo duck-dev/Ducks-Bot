@@ -113,7 +113,7 @@ namespace DucksBot.Commands
             try
             {
                 await user.BanAsync(7, reason);
-                await Utilities.BuildModerationCallback(reason, span.ToString(), user, ctx, InfractionTypes.TempBan);
+                await Utilities.BuildModerationCallback(reason, span, user, ctx, InfractionTypes.TempBan);
             }
             catch (Exception)
             {

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using DucksBot.Services;
+using Humanizer;
 
 namespace DucksBot
 {
@@ -257,7 +258,7 @@ namespace DucksBot
         /// <param name="ctx">The CommandContext required for building the embed</param>
         /// <param name="infractionType">The infraction type</param>
         /// <returns>The message that has been created.</returns>
-        public static async Task<DiscordMessage> BuildModerationCallback(string reason, string duration, DiscordMember user, 
+        public static async Task<DiscordMessage> BuildModerationCallback(string reason, TimeSpan? duration, DiscordMember user, 
             CommandContext ctx,
             InfractionTypes infractionType)
         {
@@ -272,8 +273,8 @@ namespace DucksBot
             };
             
             string description = $"**Reason:**\n{reason}";
-            if(duration != null)
-                description += $"\n\n**Duration:**\n{duration}";
+            if(duration is TimeSpan span)
+                description += $"\n\n**Duration:**\n{span.Humanize()}";
             
             return await BuildEmbedAndExecuteAsync($"{type} '{user.DisplayName}'", description, Red, ctx, false);
         }

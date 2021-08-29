@@ -51,7 +51,7 @@ namespace DucksBot.Commands
             TemporaryInfraction infraction = new TemporaryInfraction(InfractionTypes.TempMute, user, span, ctx.Guild);
             InfractionService.Infractions.Add(infraction);
             
-            await Utilities.BuildModerationCallback(reason, span.ToString(), user, ctx, InfractionTypes.TempMute);
+            await Utilities.BuildModerationCallback(reason, span, user, ctx, InfractionTypes.TempMute);
         }
 
         [Command("unmute")]
