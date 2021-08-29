@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
@@ -39,11 +38,8 @@ namespace DucksBot.Commands
                 await Utilities.ErrorCallbackAsync(CommandErrors.InvalidUser, ctx);
                 return;
             }
-            
-            var role = Utilities.GetRoleByName("Muted", ctx);
 
-            if (!user.Roles.Contains(role))
-                await user.GrantRoleAsync(role, reason);
+            await MuteUserAsync(user, ctx.Guild, reason);
 
             var span = Utilities.TransformTimeAbbreviation(length);
             if (span is null)
@@ -83,7 +79,7 @@ namespace DucksBot.Commands
                 return;
             }
             
-            var role = Utilities.GetRoleByName("Muted", ctx);
+            var role = Utilities.GetRoleByName("Muted", ctx.Guild);
 
             await user.RevokeRoleAsync(role, reason);
 
@@ -91,6 +87,14 @@ namespace DucksBot.Commands
             string description = $"{user.DisplayName} has been successfully unmuted.\n\n**Reason:**\n{reason}";
             await Utilities.BuildEmbedAndExecuteAsync($"Unmuted {user.DisplayName}", description, Utilities.Green, ctx,
                 false);
+        }
+
+        public static async Task MuteUserAsync(DiscordMember user, DiscordGuild guild, string reason = null)
+        {
+            var role = Utilities.GetRoleByName("Muted", guild);
+
+            if (!user.Roles.Contains(role))
+                await user.GrantRoleAsync(role, reason);
         }
     }
 }

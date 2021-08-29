@@ -55,5 +55,15 @@ namespace DucksBot
             return text.Substring(location, until - location);
         }
         #endregion
+        
+        #region TimeSpan
+        /// <summary>
+        /// Returns a "human-readable" string from a TimeSpan.
+        /// </summary>
+        public static string ToHumanTimeString(this TimeSpan span)
+        {
+            return null;
+        }
+        #endregion
     }
 }

@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
+using DSharpPlus;
 using DSharpPlus.Entities;
+using DSharpPlus.EventArgs;
+using DucksBot.Commands;
 
 namespace DucksBot.Services
 {
@@ -52,6 +55,17 @@ namespace DucksBot.Services
             var infr = Infractions.FirstOrDefault(x => x.User.Id == user.Id && x.InfractionType == type);
             if (infr != null)
                 Infractions.Remove(infr);
+        }
+        
+        public static async Task CheckUserMutedAsync(DiscordClient client, GuildMemberAddEventArgs args)
+        {
+            var member = args.Member;
+            var infraction = Infractions.FirstOrDefault(x => x.User.Id == member.Id);
+            if (infraction is null)
+                return;
+            
+            if(infraction.ReleaseTime > DateTime.Now)
+                await Moderation.MuteUserAsync(member, args.Guild, "User rejoined while already being muted.");
         }
     }
 

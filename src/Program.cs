@@ -29,8 +29,12 @@ namespace DucksBot
             discord.UseInteractivity(new InteractivityConfiguration() {
                 Timeout = TimeSpan.FromHours(2)
             });
-            CustomCommandsService.DiscordClient = discord;
             
+            discord.GuildMemberAdded += LogService.DiscordMemberAdded;
+            discord.GuildMemberAdded += InfractionService.CheckUserMutedAsync;
+            discord.GuildMemberRemoved += LogService.DiscordMemberRemoved;
+
+            CustomCommandsService.DiscordClient = discord;
             var commands = discord.UseCommandsNext(new CommandsNextConfiguration() {
                 StringPrefixes = new[] { prefix[0].ToString() } // ! will be the default command prefix if nothing else is specified in the parameters
             });

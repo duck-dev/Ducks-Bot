@@ -29,6 +29,7 @@ namespace DucksBot
         /// <param name="count">The count, the string is referring to</param>
         /// <param name="singular">The singular version (referring to only one)</param>
         /// <param name="plural">The singular version (referring to more than one)</param>
+        /// <returns>The formatted message</returns>
         public static string PluralFormatter(int count, string singular, string plural)
         {
             return count > 1 ? plural : singular;
@@ -42,6 +43,7 @@ namespace DucksBot
         /// <param name="directoryName">The name of the final folder, in which the file will be saved</param>
         /// <param name="fileNameRaw">The name of the file (without file type)</param>
         /// <param name="fileSuffix">The file-suffix (file-type, e.g. ".txt" or ".png")</param>
+        /// <returns>The constructed path</returns>
         public static string ConstructPath(string directoryName, string fileNameRaw, string fileSuffix)
         {
             string directoryPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, directoryName);
@@ -57,12 +59,22 @@ namespace DucksBot
         /// <param name="title">Embed title</param>
         /// <param name="description">Embed description</param>
         /// <param name="color">Embed color</param>
-        public static DiscordEmbedBuilder BuildEmbed(string title, string description, DiscordColor color)
+        /// <param name="imageUrl">Optional embed image URL</param>
+        /// <returns>The embed template</returns>
+        public static DiscordEmbedBuilder BuildEmbed(string title, string description, DiscordColor color, 
+            string imageUrl = null)
         {
-            DiscordEmbedBuilder b = new DiscordEmbedBuilder();
-            b.Title = title;
-            b.Color = color;
-            b.Description = description;
+            DiscordEmbedBuilder b = new DiscordEmbedBuilder
+            {
+                Title = title,
+                Color = color,
+                Description = description
+            };
+            if (imageUrl != null)
+                b.Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail
+                {
+                    Url = imageUrl
+                };
 
             return b;
         }
@@ -76,27 +88,56 @@ namespace DucksBot
         /// <param name="color">Embed color</param>
         /// <param name="ctx">CommandContext, required to send a message</param>
         /// <param name="respond">Respond to original message or send an independent message?</param>
+        /// <param name="imageUrl">Optional embed image URL</param>
+        /// <returns>The message that has been created</returns>
         public static async Task<DiscordMessage> BuildEmbedAndExecuteAsync(string title, string description,
-            DiscordColor color,
-            CommandContext ctx, 
-            bool respond)
+            DiscordColor color, CommandContext ctx, bool respond, string imageUrl = null)
         {
-            var embedBuilder = BuildEmbed(title, description, color);
+            var embedBuilder = BuildEmbed(title, description, color, imageUrl);
             return await LogEmbed(embedBuilder, ctx, respond);
+        }
+        
+        /// <summary>
+        /// Builds a Discord embed with a given TITLE, DESCRIPTION and COLOR
+        /// and SENDS the embed as a message
+        /// </summary>
+        /// <param name="title">Embed title</param>
+        /// <param name="description">Embed description</param>
+        /// <param name="color">Embed color</param>
+        /// <param name="channel">The channel to send the message in</param>
+        /// <param name="imageUrl">Optional embed image URL</param>
+        /// <returns>The message that has been created</returns>
+        public static async Task<DiscordMessage> BuildEmbedAndExecuteAsync(string title, string description, 
+            DiscordColor color, DiscordChannel channel, string imageUrl = null)
+        {
+            var embedBuilder = BuildEmbed(title, description, color, imageUrl);
+            return await LogEmbed(embedBuilder, channel);
         }
 
         /// <summary>
-        /// Logs an embed as a message in the relevant channel
+        /// Sends an embed as a message into the relevant channel
         /// </summary>
         /// <param name="builder">Embed builder with the embed template</param>
         /// <param name="ctx">CommandContext, required to send a message</param>
         /// <param name="respond">Respond to original message or send an independent message?</param>
+        /// <returns>The message that has been created</returns>
         public static async Task<DiscordMessage> LogEmbed(DiscordEmbedBuilder builder, CommandContext ctx, bool respond)
         {
             if (respond)
                 return await ctx.RespondAsync(builder.Build());
 
             return await ctx.Channel.SendMessageAsync(builder.Build());
+        }
+
+        /// <summary>
+        /// Sends an embed as a message into the relevant channel
+        /// </summary>
+        /// <param name="builder">Embed builder with the embed template</param>
+        /// <param name="channel">The channel to send the message in</param>
+        /// <returns>The message that has been created</returns>
+        public static async Task<DiscordMessage> LogEmbed(DiscordEmbedBuilder builder, DiscordChannel channel)
+        {
+            return await channel.SendMessageAsync(builder.Build());
         }
 
         /// <summary>
@@ -161,6 +202,7 @@ namespace DucksBot
         /// Turns an abbreviated time statement (string, e.g. '4d' for 4 days) into a TimeSpan
         /// </summary>
         /// <param name="content">Abbreviated time statement</param>
+        /// <returns>The TimeSpan created from the abbreviated time statement</returns>
         public static TimeSpan? TransformTimeAbbreviation(string content)
         {
             var match = timePattern.Match(content);
@@ -183,11 +225,12 @@ namespace DucksBot
             }
         }
 
-        public static DiscordRole GetRoleByName(string roleName, CommandContext ctx)
-        {
-            return GetRoleByName(roleName, ctx.Guild);
-        }
-
+        /// <summary>
+        /// Get a role by it's name
+        /// </summary>
+        /// <param name="roleName">The name of the role</param>
+        /// <param name="guild">The guild containing this role</param>
+        /// <returns>DiscordRole instance representing the role</returns>
         public static DiscordRole GetRoleByName(string roleName, DiscordGuild guild)
         {
             var role = guild.Roles.FirstOrDefault(x => x.Value.Name == roleName).Value;
@@ -197,12 +240,23 @@ namespace DucksBot
             return role;
         }
 
+        /// <inheritdoc cref="BuildModerationCallback(string, string, DiscordMember, CommandContext, InfractionTypes)"/>
         public static async Task<DiscordMessage> BuildModerationCallback(string reason, DiscordMember user, CommandContext ctx,
             InfractionTypes infractionType)
         {
             return await BuildModerationCallback(reason, null, user, ctx, infractionType);
         }
 
+        /// <summary>
+        /// Builds a moderation callback when a moderation action (ban, tempban, kick, mute) has been completed successfully.
+        /// It prints the reason why this action has been taken and the duration if it's a temporary infraction. 
+        /// </summary>
+        /// <param name="reason">Reason for the moderation action</param>
+        /// <param name="duration">The duration of the temporary infraction</param>
+        /// <param name="user">The user against whom the action was performed</param>
+        /// <param name="ctx">The CommandContext required for building the embed</param>
+        /// <param name="infractionType">The infraction type</param>
+        /// <returns>The message that has been created.</returns>
         public static async Task<DiscordMessage> BuildModerationCallback(string reason, string duration, DiscordMember user, 
             CommandContext ctx,
             InfractionTypes infractionType)
