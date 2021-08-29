@@ -24,7 +24,7 @@ namespace DucksBot.Commands
         }
 
         [Command("ban")]
-        [Description("Bans the specified user with a specified reason.")]
+        [Description("Bans the specified user providing a specified reason.")]
         [RequirePermissions(Permissions.BanMembers)]
         [RequireRoles(RoleCheckMode.Any, "Mod")]
         public async Task BanCommandAsync(CommandContext ctx, 
@@ -45,7 +45,7 @@ namespace DucksBot.Commands
         }
         
         [Command("softban")]
-        [Description("Bans the specified user with a specified reason, but doesn't delete their messages.")]
+        [Description("Bans the specified user providing a specified reason, but doesn't delete their messages.")]
         [RequirePermissions(Permissions.BanMembers)]
         [RequireRoles(RoleCheckMode.Any, "Mod")]
         public async Task SoftbanCommandAsync(CommandContext ctx,
@@ -127,6 +127,7 @@ namespace DucksBot.Commands
         // <-------------- Unban --------------> //
 
         [Command("unban")]
+        [Description("Unban a specific user by their ID.")]
         [RequirePermissions(Permissions.BanMembers)]
         [RequireRoles(RoleCheckMode.Any, "Mod")]
         public async Task UnbanCommandAsync(CommandContext ctx, 
@@ -136,6 +137,7 @@ namespace DucksBot.Commands
         }
 
         [Command("unban")]
+        [Description("Unban a specific user by their ID.")]
         [RequirePermissions(Permissions.BanMembers)]
         [RequireRoles(RoleCheckMode.Any, "Mod")]
         public async Task UnbanCommandAsync(CommandContext ctx,

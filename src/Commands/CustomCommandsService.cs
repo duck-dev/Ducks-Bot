@@ -28,7 +28,7 @@ namespace DucksBot.Commands
                      "be displayed once someone invokes this CC. Your entire next message will be used for the content, so " +
                      "be careful what you type!\n\n**Usage:**\n\n- `newcc name` (without alias)\n- `newcc name alias1 alias2`" +
                      " (with 2 aliases)\n\nThis command can only be invoked by a Mod.")]
-        [RequireRoles(RoleCheckMode.Any, "Mod")] // Restrict access to users with the "Mod" role only
+        [RequireRoles(RoleCheckMode.Any, "Mod")]
         public async Task CreateCommandAsync(CommandContext ctx, 
             [Description("A 'list' of all aliases. The first term is the **main name**, the other ones, separated by a space, are aliases")] params string[] names)
         {
@@ -51,7 +51,7 @@ namespace DucksBot.Commands
         [Description("**Delete** a Custom Command (so-called 'CC').\n**Attention!** Use the main name of the CC " +
                      "you entered first when you created it, **not an alias!**\nThe CC will be irrevocably deleted." +
                      "\n\nThis command can only be invoked by a Mod.")]
-        [RequireRoles(RoleCheckMode.Any, "Mod")] // Restrict access to users with the "Mod" role only
+        [RequireRoles(RoleCheckMode.Any, "Mod")]
         public async Task DeleteCommandAsync(CommandContext ctx, 
             [Description("Main name of the CC you want to delete")] string name)
         {
@@ -74,7 +74,7 @@ namespace DucksBot.Commands
         [Description("**Edit** the **content** of a Custom Command (so-called 'CC')." +
                      "\n**Attention!** Use the main name of the CC you entered first when you created it, **not an alias!**" +
                      "\n\nThis command can only be invoked by a Mod.")]
-        [RequireRoles(RoleCheckMode.Any, "Mod")] // Restrict access to users with the "Mod" role only
+        [RequireRoles(RoleCheckMode.Any, "Mod")]
         public async Task EditCommandAsync(CommandContext ctx, 
             [Description("Main name of the CC you want to edit")] string name)
         {
@@ -109,7 +109,7 @@ namespace DucksBot.Commands
         [Description("**Edit** the **names** (including aliases) of an existing CC." +
                      "\n**Attention!** Use the main name of the CC you entered first when you created it, **not an alias!**" +
                      "\n\nThis command can only be invoked by a Mod.")]
-        [RequireRoles(RoleCheckMode.Any, "Mod")] // Restrict access to users with the "Mod" role only
+        [RequireRoles(RoleCheckMode.Any, "Mod")]
         public async Task EditCommandNameAsync(CommandContext ctx, 
             [Description("A list of new names and aliases, __**BUT**__ the **FIRST** term is the current **main name** " +
                          "of the CC whose name you want to edit, the **SECOND** term " +

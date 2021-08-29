@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
@@ -39,11 +37,7 @@ namespace DucksBot.Commands
             {
                 string currentEmoji = allEmojisStr[i];
                 currentEmoji = currentEmoji.Trim();
-                
-                // var enc = new UTF32Encoding(true, false);
-                // byte[] bytes = enc.GetBytes(currentEmoji);
-                // string o = BitConverter.ToString(bytes).Replace("-", string.Empty);
-                
+
                 string currentEmoteWithoutName = currentEmoji;
                 if (currentEmoji.Contains(':'))
                 {

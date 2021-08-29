@@ -16,17 +16,14 @@ namespace DucksBot.Commands
     {
         private const int MessageLimit = 50;
         private const string CallbackLimitExceeded = ", since you can't delete more than 50 messages at a time.";
-
-        /// <summary>
-        /// Delete the last x messages of any user
-        /// </summary>
+        
         [Command("delete")]
         [Aliases("clear", "purge")]
         [Description("Deletes the last x messages in the channel, the command was invoked in (e.g. `\\delete 10`)." +
                      "\nIt contains an overload to delete the last x messages of a specified user (e.g. `\\delete @User 10`)." +
                      "\nThis command can only be invoked by a Helper or Mod.")]
-        [RequirePermissions(Permissions.ManageMessages)] // Restrict this command to users/roles who have the "Manage Messages" permission
-        [RequireRoles(RoleCheckMode.Any, "Mod")] // Restrict this command to the "Mod" role only
+        [RequirePermissions(Permissions.ManageMessages)]
+        [RequireRoles(RoleCheckMode.Any, "Mod")]
         public async Task DeleteCommandAsync(CommandContext ctx, 
             [Description("How many messages should be deleted?")] int count)
         {
@@ -43,13 +40,10 @@ namespace DucksBot.Commands
 
             await SuccessAsync(ctx, limitExceeded, count);
         }
-
-        /// <summary>
-        /// Delete the last x messages of the specified user
-        /// </summary>
+        
         [Command("delete")]
-        [RequirePermissions(Permissions.ManageMessages)] // Restrict this command to users/roles who have the "Manage Messages" permission
-        [RequireRoles(RoleCheckMode.Any, "Mod")] // Restrict this command to the "Mod" role only
+        [RequirePermissions(Permissions.ManageMessages)]
+        [RequireRoles(RoleCheckMode.Any, "Mod")]
         public async Task DeleteCommandAsync(CommandContext ctx, 
             [Description("Whose last x messages should get deleted?")] DiscordMember targetUser, 
             [Description("How many messages should get deleted?")] int count)
@@ -74,9 +68,6 @@ namespace DucksBot.Commands
             await SuccessAsync(ctx, limitExceeded, count, targetUser);
         }
 
-        /// <summary>
-        /// The core-process of deleting the messages
-        /// </summary>
         private async Task DeleteMessagesAsync(CommandContext ctx, IEnumerable<DiscordMessage> messages)
         {
             foreach (DiscordMessage m in messages)
@@ -85,11 +76,7 @@ namespace DucksBot.Commands
                     await m.DeleteAsync();
             }
         }
-
-        /// <summary>
-        /// Will be called at the end of every execution of this command and tells the user that the execution succeeded
-        /// including a short summary of the command (how many messages, by which user etc.)
-        /// </summary>
+        
         private async Task SuccessAsync(CommandContext ctx, bool limitExceeded, int count, DiscordMember targetUser = null)
         {
             string mentionUserStr = targetUser == null ? string.Empty : $"by '{targetUser.DisplayName}'";

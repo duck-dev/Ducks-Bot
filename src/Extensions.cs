@@ -14,7 +14,8 @@ namespace DucksBot
         /// <param name="text">The entire string</param>
         /// <param name="until">The occurrence that we're searching for</param>
         /// <param name="from">0 by default to start from the very beginning, but it may be useful to set this number if
-        /// you don't want it to start at the beginning of 'text' (especially used by 'GetFromUntil' method).</param>
+            /// you don't want it to start at the beginning of 'text' (especially used by 'GetFromUntil' method).</param>
+        /// <returns>The selected part of the string</returns>
         public static string GetUntilOrEmpty(this string text, string until, int from = 0)
         {
             if (string.IsNullOrWhiteSpace(text)) 
@@ -37,6 +38,7 @@ namespace DucksBot
         /// <param name="text">The entire string</param>
         /// <param name="from">First occurrence that we're searching for</param>
         /// <param name="until">'null' by default, meaning that it will go from 'from' to the end of the entire string.</param>
+        /// <returns>The selected part of the string</returns>
         public static string GetFromUntil(this string text, string from, string until = null)
         {
             int location = text.IndexOf(from, StringComparison.Ordinal) + from.Length;
@@ -50,6 +52,7 @@ namespace DucksBot
         /// <param name="text">The entire string</param>
         /// <param name="from">Index of the first occurrence that we're searching for</param>
         /// <param name="until">'null' by default, meaning that it will go from 'from' to the end of the entire string.</param>
+        /// <returns>The selected part of the string</returns>
         public static string GetFromUntil(this string text, int from, string until = null)
         {
             return GetUntilOrEmpty(text, until, from);
@@ -61,6 +64,7 @@ namespace DucksBot
         /// <param name="text">The entire string</param>
         /// <param name="from">First occurrence that we're searching for</param>
         /// <param name="until">The index, which specifies the end of the returned string.</param>
+        /// <returns>The selected part of the string</returns> 
         public static string GetFromUntil(this string text, string from, int until)
         {
             int location = text.IndexOf(from, StringComparison.Ordinal) + from.Length;
@@ -72,6 +76,7 @@ namespace DucksBot
         /// <summary>
         /// Returns a "human-readable" string from a TimeSpan.
         /// </summary>
+        /// <returns>The "human-readable" string, representing a TimeSpan</returns> 
         public static string ToHumanTimeString(this TimeSpan span)
         {
             return null;

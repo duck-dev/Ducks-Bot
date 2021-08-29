@@ -15,8 +15,8 @@ namespace DucksBot.Commands
     {
         [Command("mute")]
         [Description("Mutes a specific user for the specified time and unmutes them after this time has passed.")]
-        [RequirePermissions(Permissions.ManageRoles)] // Restrict access to users with "Manage Roles" permission
-        [RequireRoles(RoleCheckMode.Any, "Mod")] // Restrict access to "Mod" role
+        [RequirePermissions(Permissions.ManageRoles)]
+        [RequireRoles(RoleCheckMode.Any, "Mod")]
         public async Task MuteCommandAsync(CommandContext ctx, 
             [Description("The user to mute.")] DiscordMember user, 
             [Description("The length of this temporary mute (string will be converted to timespan).")] string length)
@@ -26,8 +26,8 @@ namespace DucksBot.Commands
 
         [Command("mute")]
         [Description("Mutes a specific user for the specified time and unmutes them after this time has passed.")]
-        [RequirePermissions(Permissions.ManageRoles)] // Restrict access to users with "Manage Roles" permission
-        [RequireRoles(RoleCheckMode.Any, "Mod")] // Restrict access to the "Mod" role
+        [RequirePermissions(Permissions.ManageRoles)]
+        [RequireRoles(RoleCheckMode.Any, "Mod")]
         public async Task MuteCommandAsync(CommandContext ctx,
             [Description("The user to mute.")] DiscordMember user,
             [Description("The length of this temporary mute (string will be converted to timespan).")] string length,
@@ -56,8 +56,8 @@ namespace DucksBot.Commands
 
         [Command("unmute")]
         [Description("Unmutes a specific user.")]
-        [RequirePermissions(Permissions.ManageRoles)] // Restrict access to users with "Manage Roles" permission
-        [RequireRoles(RoleCheckMode.Any, "Mod")] // Restrict access to the "Mod" role
+        [RequirePermissions(Permissions.ManageRoles)]
+        [RequireRoles(RoleCheckMode.Any, "Mod")]
         public async Task UnmuteCommandAsync(CommandContext ctx,
             [Description("The user to unmute.")] DiscordMember user)
         {
@@ -66,8 +66,8 @@ namespace DucksBot.Commands
         
         [Command("unmute")]
         [Description("Unmutes a specific user.")]
-        [RequirePermissions(Permissions.ManageRoles)] // Restrict access to users with "Manage Roles" permission
-        [RequireRoles(RoleCheckMode.Any, "Mod")] // Restrict access to the "Mod" role
+        [RequirePermissions(Permissions.ManageRoles)]
+        [RequireRoles(RoleCheckMode.Any, "Mod")]
         public async Task UnmuteCommandAsync(CommandContext ctx,
             [Description("The user to unmute.")] DiscordMember user,
             [Description("The reason for the unmute")] [RemainingText] string reason)
