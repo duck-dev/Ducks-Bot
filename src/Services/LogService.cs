@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
@@ -25,11 +26,14 @@ namespace DucksBot.Services
         private static async Task SendTrackingMessageAsync(DiscordMember member, bool join)
         {
             string action = join ? "joined" : "left";
+            var color = join ? Utilities.Green : Utilities.Red;
             var creationDate = member.CreationTimestamp;
-            string description = $"{member.DisplayName}{member.Discriminator} {action} the server!" +
-                                 $"\n\n**Member account created**\n{creationDate.UtcDateTime}\n({creationDate.LocalDateTime})";
-            
-            await Utilities.BuildEmbedAndExecuteAsync($"{member.DisplayName} joined", description, Utilities.Green, 
+            string localTimeZone = TimeZoneInfo.Local.DisplayName.GetFromUntil(1, ")");
+            string description = $"{member.DisplayName}{member.Discriminator} {action} the server!";
+            if (join)
+                description += $"\n\n**Member account created**\n{creationDate.LocalDateTime} ({localTimeZone})";
+
+            await Utilities.BuildEmbedAndExecuteAsync($"{member.DisplayName} {action}", description, color, 
                 trackingChannel, member.AvatarUrl);
         }
     }

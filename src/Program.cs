@@ -23,7 +23,7 @@ namespace DucksBot
             {
                 Token = token,
                 TokenType = TokenType.Bot,
-                Intents = DiscordIntents.AllUnprivileged
+                Intents = DiscordIntents.AllUnprivileged | DiscordIntents.GuildMembers
             });
             
             discord.UseInteractivity(new InteractivityConfiguration() {

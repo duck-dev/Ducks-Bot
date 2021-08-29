@@ -42,6 +42,18 @@ namespace DucksBot
             int location = text.IndexOf(from, StringComparison.Ordinal) + from.Length;
             return GetUntilOrEmpty(text, until, location);
         }
+        
+        /// <summary>
+        /// Get the part from the first occurrence of a specified string until the first occurrence of another
+        /// specified string. If 'until' is not set, it will just go to the end of the entire string.
+        /// </summary>
+        /// <param name="text">The entire string</param>
+        /// <param name="from">Index of the first occurrence that we're searching for</param>
+        /// <param name="until">'null' by default, meaning that it will go from 'from' to the end of the entire string.</param>
+        public static string GetFromUntil(this string text, int from, string until = null)
+        {
+            return GetUntilOrEmpty(text, until, from);
+        }
 
         /// <summary>
         /// Get the part from the first occurrence of a specified string until the specified index.
