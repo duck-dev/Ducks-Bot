@@ -29,7 +29,7 @@ namespace DucksBot.Services
             var color = join ? Utilities.Green : Utilities.Red;
             var creationDate = member.CreationTimestamp;
             string localTimeZone = TimeZoneInfo.Local.DisplayName.GetFromUntil(1, ")");
-            string description = $"{member.DisplayName}{member.Discriminator} {action} the server!";
+            string description = $"{member.DisplayName}#{member.Discriminator} {action} the server!";
             if (join)
                 description += $"\n\n**Member account created**\n{creationDate.LocalDateTime} ({localTimeZone})";
 
