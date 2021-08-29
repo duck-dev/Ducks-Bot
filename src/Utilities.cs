@@ -1,6 +1,7 @@
 ﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
 using System;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -274,7 +275,7 @@ namespace DucksBot
             
             string description = $"**Reason:**\n{reason}";
             if(duration is TimeSpan span)
-                description += $"\n\n**Duration:**\n{span.Humanize()}";
+                description += $"\n\n**Duration:**\n{span.Humanize(culture: CultureInfo.GetCultureInfo("en-US"))}";
             
             return await BuildEmbedAndExecuteAsync($"{type} '{user.DisplayName}'", description, Red, ctx, false);
         }
