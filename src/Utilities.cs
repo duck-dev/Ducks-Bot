@@ -157,7 +157,7 @@ namespace DucksBot
                 case CommandErrors.CommandExists:
                     respond = true;
                     if (additionalParams[0] is string name)
-                        message = $"There is already a command containing the alias {additionalParams[0]}";
+                        message = $"There is already a command containing the alias **{additionalParams[0]}**";
                     else
                         throw new System.ArgumentException("This error type 'CommandErrors.CommandExists' requires a string");
                     break;
@@ -166,7 +166,7 @@ namespace DucksBot
                     respond = false;
                     break;
                 case CommandErrors.InvalidParams:
-                    message = "The given parameters are invalid. Enter \\help [commandName] to get help with the usage of the command.";
+                    message = "The given parameters are invalid. Enter !help [commandName] to get help with the usage of the command.";
                     respond = true;
                     break;
                 case CommandErrors.InvalidParamsDelete:
