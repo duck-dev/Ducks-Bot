@@ -149,7 +149,6 @@ namespace DucksBot
         /// <exception cref="ArgumentException">Invalid parameters passed</exception>
         internal static async Task ErrorCallbackAsync(CommandErrors error, CommandContext ctx, params object[] additionalParams)
         {
-            DiscordColor red = Red;
             string message = string.Empty;
             bool respond = false;
             switch (error)
@@ -191,7 +190,7 @@ namespace DucksBot
                     break;
             }
 
-            await BuildEmbedAndExecuteAsync("Error", message, red, ctx, respond);
+            await BuildEmbedAndExecuteAsync("Error", message, Red, ctx, respond);
         }
 
         // Regex for abbreviated time statement
@@ -200,6 +199,7 @@ namespace DucksBot
 
         /// <summary>
         /// Turns an abbreviated time statement (string, e.g. '4d' for 4 days) into a TimeSpan
+        /// y = years, mo = months, w = weeks, d = days, h = hours, m = minutes, s = seconds
         /// </summary>
         /// <param name="content">Abbreviated time statement</param>
         /// <returns>The TimeSpan created from the abbreviated time statement</returns>
