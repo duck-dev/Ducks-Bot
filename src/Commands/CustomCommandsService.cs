@@ -201,6 +201,17 @@ namespace DucksBot.Commands
                 }
             }
         }
+        
+        internal static bool TryGetCommand(string name, out CustomCommand command)
+        {
+            command = GetCommandByName(name);
+            return command != null;
+        }
+
+        private static CustomCommand GetCommandByName(string name)
+        {
+            return Commands.FirstOrDefault(cc => cc.Names.Contains(name));
+        }
 
         private async Task WriteToFileAsync(CustomCommand command)
         {
@@ -227,17 +238,6 @@ namespace DucksBot.Commands
             });
             
             return content;
-        }
-
-        internal static bool TryGetCommand(string name, out CustomCommand command)
-        {
-            command = GetCommandByName(name);
-            return command != null;
-        }
-
-        private static CustomCommand GetCommandByName(string name)
-        {
-            return Commands.FirstOrDefault(cc => cc.Names.Contains(name));
         }
 
         private static async Task<bool> ContainsExistingCommandsAsync(IEnumerable<string> names, CommandContext ctx)

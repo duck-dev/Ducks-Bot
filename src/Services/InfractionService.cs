@@ -50,14 +50,14 @@ namespace DucksBot.Services
             }
         }
 
-        public static void RemoveInfractionPrematurely(DiscordUser user, InfractionTypes type)
+        internal static void RemoveInfractionPrematurely(DiscordUser user, InfractionTypes type)
         {
             var infr = Infractions.FirstOrDefault(x => x.User.Id == user.Id && x.InfractionType == type);
             if (infr != null)
                 Infractions.Remove(infr);
         }
         
-        public static async Task CheckUserMutedAsync(DiscordClient client, GuildMemberAddEventArgs args)
+        internal static async Task CheckUserMutedAsync(DiscordClient client, GuildMemberAddEventArgs args)
         {
             var member = args.Member;
             var infraction = Infractions.FirstOrDefault(x => x.User.Id == member.Id);

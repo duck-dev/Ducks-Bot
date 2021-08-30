@@ -11,13 +11,13 @@ namespace DucksBot.Services
         private static DiscordChannel trackingChannel;
         private const ulong trackingChannelID = 881482499056881664; 
 
-        public static async Task DiscordMemberAdded(DiscordClient client, GuildMemberAddEventArgs args)
+        internal static async Task DiscordMemberAdded(DiscordClient client, GuildMemberAddEventArgs args)
         {
             trackingChannel ??= args.Guild.GetChannel(trackingChannelID);
             await SendTrackingMessageAsync(args.Member, true);
         }
 
-        public static async Task DiscordMemberRemoved(DiscordClient client, GuildMemberRemoveEventArgs args)
+        internal static async Task DiscordMemberRemoved(DiscordClient client, GuildMemberRemoveEventArgs args)
         {
             trackingChannel ??= args.Guild.GetChannel(trackingChannelID);
             await SendTrackingMessageAsync(args.Member, false);

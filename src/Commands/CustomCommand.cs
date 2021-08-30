@@ -7,9 +7,9 @@ namespace DucksBot.Commands
     /// Holds information about a CustomCommand
     /// and contains functions which execute or edit the command
     /// </summary>
-    public class CustomCommand
+    internal class CustomCommand
     {
-        public CustomCommand(string[] names, string content)
+        internal CustomCommand(string[] names, string content)
         {
             this.Names = names;
             this.FilePath = Utilities.ConstructPath(CustomCommandsService.DirectoryNameCC, names[0], ".txt");

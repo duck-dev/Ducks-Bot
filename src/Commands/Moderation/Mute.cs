@@ -89,7 +89,7 @@ namespace DucksBot.Commands
                 false);
         }
 
-        public static async Task MuteUserAsync(DiscordMember user, DiscordGuild guild, string reason = null)
+        internal static async Task MuteUserAsync(DiscordMember user, DiscordGuild guild, string reason = null)
         {
             var role = Utilities.GetRoleByName("Muted", guild);
 
