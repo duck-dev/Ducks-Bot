@@ -3,23 +3,24 @@ using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using DucksBot.Extensions;
 
 namespace DucksBot.Services
 {
     public static class LogService
     {
-        private static DiscordChannel trackingChannel;
-        private const ulong trackingChannelID = 881482499056881664; 
+        private static DiscordChannel _trackingChannel;
+        private const ulong TrackingChannelID = 881482499056881664; 
 
         internal static async Task DiscordMemberAdded(DiscordClient client, GuildMemberAddEventArgs args)
         {
-            trackingChannel ??= args.Guild.GetChannel(trackingChannelID);
+            _trackingChannel ??= args.Guild.GetChannel(TrackingChannelID);
             await SendTrackingMessageAsync(args.Member, true);
         }
 
         internal static async Task DiscordMemberRemoved(DiscordClient client, GuildMemberRemoveEventArgs args)
         {
-            trackingChannel ??= args.Guild.GetChannel(trackingChannelID);
+            _trackingChannel ??= args.Guild.GetChannel(TrackingChannelID);
             await SendTrackingMessageAsync(args.Member, false);
         }
 
@@ -34,7 +35,7 @@ namespace DucksBot.Services
                 description += $"\n\n**Member account created**\n{creationDate.LocalDateTime} ({localTimeZone})";
 
             await Utilities.BuildEmbedAndExecuteAsync($"{member.DisplayName} {action}", description, color, 
-                trackingChannel, member.AvatarUrl);
+                _trackingChannel, member.AvatarUrl);
         }
     }
 }

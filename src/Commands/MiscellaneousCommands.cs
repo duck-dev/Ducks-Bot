@@ -10,7 +10,7 @@ namespace DucksBot.Commands
     /// </summary>
     public class MiscellaneousCommands : BaseCommandModule
     {
-        private readonly Random random = new Random();
+        private readonly Random _random = new Random();
         
         [Command("random")]
         [Description("Get a random number in the specified range (both values INCLUSIVE)")]
@@ -25,7 +25,7 @@ namespace DucksBot.Commands
                 return;
             }
             
-            int num = random.Next(a, b + 1);
+            var num = _random.Next(a, b + 1);
             await ctx.RespondAsync(num.ToString());
         }
     }

@@ -1,13 +1,12 @@
 ﻿using System;
 
-namespace DucksBot
+namespace DucksBot.Extensions
 {
     /// <summary>
-    /// All extension methods
+    /// `string` Extension methods
     /// </summary>
-    public static class Extensions
+    public static partial class Extensions
     {
-        #region string
         /// <summary>
         /// Get the part from a specified index to the first occurrence of a specified string inside a string
         /// </summary>
@@ -70,6 +69,5 @@ namespace DucksBot
             int location = text.IndexOf(from, StringComparison.Ordinal) + from.Length;
             return text.Substring(location, until - location);
         }
-        #endregion
     }
 }

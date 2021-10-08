@@ -13,17 +13,17 @@ namespace DucksBot.Services
     public static class InfractionService
     {
         internal static List<TemporaryInfraction> Infractions { get; } = new List<TemporaryInfraction>();
-        private static Timer timer;
+        private static Timer _timer;
 
         internal static void Initialize()
         {
-            timer = new Timer(TimeSpan.FromSeconds(10).TotalMilliseconds)
+            _timer = new Timer(TimeSpan.FromSeconds(10).TotalMilliseconds)
             {
                 AutoReset = true,
                 Enabled = true
             };
-            timer.Elapsed += async (sender, args) => await EvaluateInfractionsAsync();
-            timer.Start();
+            _timer.Elapsed += async (sender, args) => await EvaluateInfractionsAsync();
+            _timer.Start();
         }
 
         private static async Task EvaluateInfractionsAsync()

@@ -10,7 +10,7 @@ using DucksBot.Services;
 
 namespace DucksBot
 {
-    static class Program
+    internal static class Program
     {
         private static void Main(string[] args)
         {
